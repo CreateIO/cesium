@@ -363,7 +363,9 @@ define([
         // to allow quadtree updates to add and remove primitives in
         // update().  This will be changed to manage added and removed lists.
         for (var i = 0; i < primitives.length; ++i) {
-            primitives[i].update(frameState);
+            if (!primitives[i].isDestroyed()) {
+                primitives[i].update(frameState);
+            }
         }
     };
 
