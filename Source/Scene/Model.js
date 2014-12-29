@@ -1172,8 +1172,11 @@ define([
 
     function getFailedLoadFunction(model, type, path) {
         return function() {
-            model._state = ModelState.FAILED;
-            model._readyPromise.reject(new RuntimeError('Failed to load ' + type + ': ' + path));
+//  CFA - suppress this runtime error and handle it inside the calling application
+//            model._loadError = new RuntimeError('Failed to load external ' + type + ': ' + path);
+//            model._state = ModelState.FAILED;
+            model._state = -1;
+            model._readyPromise.reject(new RuntimeError('Failed to load ' + type + ': ' + :path));
         };
     }
 
