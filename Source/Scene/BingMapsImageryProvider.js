@@ -105,7 +105,7 @@ define([
 
         this._url = options.url;
         this._tileProtocol = options.tileProtocol;
-        this._mapStyle = defaultValue(options.mapStyle, BingMapsStyle.AERIAL);
+        this._mapStyle = defaultValue(options.mapStyle, BingMapsStyle.AERIAL_WITH_LABELS);
         this._culture = defaultValue(options.culture, '');
         this._tileDiscardPolicy = options.tileDiscardPolicy;
         this._proxy = options.proxy;
