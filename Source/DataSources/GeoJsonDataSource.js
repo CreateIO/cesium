@@ -64,12 +64,12 @@ define([
 
     var crsLinkHrefs = {};
     var crsLinkTypes = {};
-    var defaultMarkerSize = 48;
+    var defaultMarkerSize = 1;
     var defaultMarkerSymbol;
     var defaultMarkerColor = Color.ROYALBLUE;
     var defaultStroke = Color.YELLOW;
     var defaultStrokeWidth = 2;
-    var defaultFill = Color.fromBytes(255, 255, 0, 100);
+    var defaultFill = Color.fromBytes(255, 255, 0, 0);
 
     var defaultStrokeWidthProperty = new ConstantProperty(defaultStrokeWidth);
     var defaultStrokeMaterialProperty = new ColorMaterialProperty(defaultStroke);
