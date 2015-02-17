@@ -76,6 +76,17 @@ define([
     var defaultFillMaterialProperty = new ColorMaterialProperty(defaultFill);
 
     var sizes = {
+        none : 1,
+        zoning : 17,
+        metro_entrance : 18,
+        metroStation : 30,
+        imm : 26,
+        year2014 : 24,
+        less1 : 22,
+        onetotwo : 22,
+        twoplus : 22,
+        tbd : 20,
+        smallest : 16,
         small : 24,
         medium : 48,
         large : 64
