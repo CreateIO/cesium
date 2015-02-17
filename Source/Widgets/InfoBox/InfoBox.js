@@ -50,15 +50,15 @@ css: { "cesium-infoBox-visible" : showInfo, "cesium-infoBox-bodyless" : _bodyles
         titleElement.setAttribute('data-bind', 'text: titleText');
         infoElement.appendChild(titleElement);
 
-        var cameraElement = document.createElement('button');
-        cameraElement.type = 'button';
-        cameraElement.className = 'cesium-button cesium-infoBox-camera';
-        cameraElement.setAttribute('data-bind', '\
-attr: { title: "Focus camera on object" },\
-click: function () { cameraClicked.raiseEvent(this); },\
-enable: enableCamera,\
-cesiumSvgPath: { path: cameraIconPath, width: 32, height: 32 }');
-        infoElement.appendChild(cameraElement);
+//         var cameraElement = document.createElement('button');
+//         cameraElement.type = 'button';
+//         cameraElement.className = 'cesium-button cesium-infoBox-camera';
+//         cameraElement.setAttribute('data-bind', '\
+// attr: { title: "Focus camera on object" },\
+// click: function () { cameraClicked.raiseEvent(this); },\
+// enable: enableCamera,\
+// cesiumSvgPath: { path: cameraIconPath, width: 32, height: 32 }');
+//         infoElement.appendChild(cameraElement);
 
         var closeElement = document.createElement('button');
         closeElement.type = 'button';

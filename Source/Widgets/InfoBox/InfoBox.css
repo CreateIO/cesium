@@ -1,17 +1,19 @@
 .cesium-infoBox {
     display: block;
     position: absolute;
-    top: 50px;
-    right: 0;
+/*    top: 10px;*/
+/*    left: 0px;  */
     width: 40%;
-    max-width: 360px;
-    background: rgba(38, 38, 38, 0.95);
-    color: #edffff;
+    max-width: 264px;
+    background: rgba(255,255,255,1);
+    color: #222;
+    font-size: 12px;
     border: 1px solid #444;
     border-right: none;
-    border-top-left-radius: 7px;
     border-bottom-left-radius: 7px;
-    box-shadow: 0 0 10px 1px #000;
+/*    box-shadow: 0 0 10px 1px #000; */
+    border-radius: .2em;
+    padding: 1px;
     -webkit-transform: translate(100%, 0);
     -moz-transform: translate(100%, 0);
     transform: translate(100%, 0);
@@ -35,21 +37,22 @@
 
 .cesium-infoBox-title {
     display: block;
-    height: 20px;
-    padding: 5px 30px 5px 25px;
-    background: rgba(84, 84, 84, 0.8);
-    border-top-left-radius: 7px;
-    text-align: center;
+    padding: .2em 2.6em .2em .5em;
+    background: #D7EAF8;
+    color: #003153;
+    font-size: 12px;
+    text-transform: uppercase;
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
+    font-weight: bold;
 }
 
 .cesium-infoBox-bodyless .cesium-infoBox-title {
     border-bottom-left-radius: 7px;
 }
 
-button.cesium-infoBox-camera {
+/*button.cesium-infoBox-camera {
     display: block;
     position: absolute;
     top: 4px;
@@ -61,13 +64,13 @@ button.cesium-infoBox-camera {
     border-radius: 3px;
     padding: 0 5px;
     margin: 0;
-}
+}*/
 
 button.cesium-infoBox-close {
     display: block;
     position: absolute;
-    top: 5px;
-    right: 5px;
+    top: 0;
+    right: 2px;
     height: 20px;
     background: transparent;
     border: none;
@@ -76,26 +79,26 @@ button.cesium-infoBox-close {
     font-size:16px;
     padding: 0 5px;
     margin: 0;
-    color: #edffff;
+    color: #428bca;
 }
 
 button.cesium-infoBox-close:focus {
-    background: rgba(238, 136, 0, 0.44);
+/*    background: rgba(238, 136, 0, 0.44);  */
     outline: none;
 }
 
 button.cesium-infoBox-close:hover {
-    background: #888;
-    color: #000;
+/*    background: #888;
+    color: #000;  */
 }
 
 button.cesium-infoBox-close:active {
-    background: #a00;
-    color: #000;
+/*    background: #a00;
+    color: #000;  */
 }
 
 .cesium-infoBox-body {
-    padding: 4px 10px;
+    padding: 4px 6px;
     margin-right: 4px;
     overflow: auto;
 }
@@ -117,30 +120,25 @@ button.cesium-infoBox-close:active {
 }
 
 .cesium-infoBox-description {
-    font-size: 13px;
+    font-size: 12px;
 }
 
 .cesium-infoBox-defaultTable {
     width: 100%;
 }
 
-.cesium-infoBox-defaultTable tr:nth-child(odd) {
-    background-color: rgba(84, 84, 84, 0.8);
-}
-
-.cesium-infoBox-defaultTable tr:nth-child(even) {
-    background-color: rgba(84, 84, 84, 0.25);
-}
-
 .cesium-infoBox-defaultTable th {
     font-weight: normal;
-    padding: 3px;
-    vertical-align: middle;
-    text-align: center;
+    padding: 3px 3px 3px 0;
+    text-align: left;
+    text-transform: capitalize;
+    vertical-align: top;
 }
 
 .cesium-infoBox-defaultTable td {
     padding: 3px;
-    vertical-align: middle;
+    vertical-align: top;
     text-align: left;
+    color: rgba(153, 153, 153, 1);
+    word-break: break-word;
 }
