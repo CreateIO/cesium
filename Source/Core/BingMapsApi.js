@@ -19,7 +19,8 @@ define([
      *
      * @type {String}
      */
-    BingMapsApi.defaultKey = 'AhlU9ujy86cadb33U05ziz--vmjUw1e693-HlIXfUCP6BXF40M5qoJQ5YPriSeqL';
+     // CREATE basic key as of 2/2/2015
+    BingMapsApi.defaultKey = 'Ak0Ar7Tn-f6khK2nXcyBIjYHoSgWfM7BrDfxeas--CM5_PVLE5q_-rDX-WGZU4hB';
 
     var printedBingWarning = false;
 
@@ -33,7 +34,7 @@ define([
                 console.log('This application is using Cesium\'s default Bing Maps key.  Please create a new key for the application as soon as possible and prior to deployment by visiting https://www.bingmapsportal.com/, and provide your key to Cesium by setting the Cesium.BingMapsApi.defaultKey property before constructing the CesiumWidget or any other object that uses the Bing Maps API.');
                 printedBingWarning = true;
             }
-            return 'Aj1ony_-Typ-KjG9SJWiKSHY23U1KmK7yAmZa9lDmuF2osXWkcZ22VPsqmCt0TCt';
+            return 'Ak0Ar7Tn-f6khK2nXcyBIjYHoSgWfM7BrDfxeas--CM5_PVLE5q_-rDX-WGZU4hB';
         }
 
         return BingMapsApi.defaultKey;
