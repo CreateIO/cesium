@@ -76,7 +76,7 @@ button.cesium-infoBox-close {
     border: none;
     border-radius: 2px;
     font-weight: bold;
-    font-size:16px;
+    font-size: 16px;
     padding: 0 5px;
     margin: 0;
     color: #428bca;
@@ -141,4 +141,8 @@ button.cesium-infoBox-close:active {
     text-align: left;
     color: rgba(153, 153, 153, 1);
     word-break: break-word;
+.cesium-infoBox-iframe {
+    border: none;
+    width: 100%; /* Fallback */
+    width: calc(100% - 2px);
 }
