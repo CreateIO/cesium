@@ -127,7 +127,7 @@ define([
         }
 
         if (html.length > 0) {
-            html = '<table class="cesium-infoBox-defaultTable"><tbody>' + html + '</tbody></table>';
+            html = '<table class="cesium-infoBox-defaultTable" cellspacing="0"><tbody>' + html + '</tbody></table>';
         }
 
         return html;
