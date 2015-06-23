@@ -2586,9 +2586,7 @@ define([
         var justLoaded = false;
 
         if (this._state === ModelState.FAILED) {
-            // throw this._loadError;
-            // substitute our own error handler
-            this.loadErrorHandler(model._baseUri);       
+            throw this._loadError;
         }
 
         if (this._state === ModelState.LOADING) {

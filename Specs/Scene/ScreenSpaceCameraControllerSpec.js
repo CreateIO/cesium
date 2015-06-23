@@ -6,6 +6,7 @@ defineSuite([
         'Core/combine',
         'Core/defined',
         'Core/Ellipsoid',
+        'Core/FeatureDetection',
         'Core/GeographicProjection',
         'Core/IntersectionTests',
         'Core/KeyboardEventModifier',
@@ -26,6 +27,7 @@ defineSuite([
         combine,
         defined,
         Ellipsoid,
+        FeatureDetection,
         GeographicProjection,
         IntersectionTests,
         KeyboardEventModifier,
@@ -42,7 +44,7 @@ defineSuite([
     "use strict";
     /*global jasmine,describe,xdescribe,it,xit,expect,beforeEach,afterEach,beforeAll,afterAll,spyOn*/
 
-    var usePointerEvents = defined(window.PointerEvent);
+    var usePointerEvents = FeatureDetection.supportsPointerEvents();
     var scene;
     var canvas;
     var camera;
@@ -159,6 +161,11 @@ defineSuite([
         var ellipsoid = Ellipsoid.WGS84;
         scene.mapProjection = new GeographicProjection(ellipsoid);
 
+        scene.frameState = {
+            mode : scene.mode,
+            mapProjection : scene.mapProjection
+        };
+
         var maxRadii = ellipsoid.maximumRadius;
         var frustum = new OrthographicFrustum();
         frustum.right = maxRadii * Math.PI;
@@ -181,6 +188,11 @@ defineSuite([
         var ellipsoid = Ellipsoid.WGS84;
         scene.mapProjection = new GeographicProjection(ellipsoid);
 
+        scene.frameState = {
+            mode : scene.mode,
+            mapProjection : scene.mapProjection
+        };
+
         var maxRadii = ellipsoid.maximumRadius;
         camera.position = new Cartesian3(0.0, 0.0, maxRadii);
         camera.direction = Cartesian3.negate(Cartesian3.UNIT_Z, new Cartesian3());
@@ -193,6 +205,11 @@ defineSuite([
 
         var ellipsoid = Ellipsoid.WGS84;
         scene.mapProjection = new GeographicProjection(ellipsoid);
+
+        scene.frameState = {
+            mode : scene.mode,
+            mapProjection : scene.mapProjection
+        };
     }
 
     it('constructor throws without a scene', function() {
@@ -284,7 +301,7 @@ defineSuite([
         moveMouse(MouseButtons.RIGHT, startPosition, endPosition);
         updateController();
         expect(position.x).toEqual(camera.position.x);
-        expect(position.y).toEqual(camera.position.y);
+        expect(position.y).toBeLessThan(camera.position.y);
         expect(position.z).toEqual(camera.position.z);
         expect(frustumDiff).toBeGreaterThan(camera.frustum.right - camera.frustum.left);
     });
@@ -313,7 +330,7 @@ defineSuite([
         updateController();
         expect(position.x).toEqual(camera.position.x);
         expect(position.y).toEqual(camera.position.y);
-        expect(position.z).toEqual(camera.position.z);
+        expect(position.z).toBeGreaterThan(camera.position.z);
         expect(frustumDiff).toBeGreaterThan(camera.frustum.right - camera.frustum.left);
     });
 
@@ -347,7 +364,7 @@ defineSuite([
         moveMouse(MouseButtons.RIGHT, startPosition, endPosition);
         updateController();
         expect(position.x).toEqual(camera.position.x);
-        expect(position.y).toEqual(camera.position.y);
+        expect(position.y).toBeLessThan(camera.position.y);
         expect(position.z).toEqual(camera.position.z);
         expect(frustumDiff).toBeGreaterThan(camera.frustum.right - camera.frustum.left);
     });
