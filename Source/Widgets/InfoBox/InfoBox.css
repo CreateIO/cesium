@@ -4,11 +4,9 @@
 /*    top: 10px;*/
 /*    left: 0px;  */
     width: 40%;
-    height: auto;
-    max-width: 264px;
-    background: rgba(255,255,255,1);
-    color: #222;
-    font-size: 12px;
+    max-width: 480px;
+    background: rgba(38, 38, 38, 0.95);
+    color: #edffff;
     border: 1px solid #444;
     border-right: none;
     border-bottom-left-radius: 7px;
@@ -38,15 +36,17 @@
 
 .cesium-infoBox-title {
     display: block;
-    padding: .2em 2.6em .2em .5em;
-    background: #D7EAF8;
-    color: #003153;
-    font-size: 12px;
-    text-transform: uppercase;
+    height: 20px;
+    padding: 5px 30px 5px 25px;
+    background: rgba(84, 84, 84, 1.0);
+    border-top-left-radius: 7px;
+    text-align: center;
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
-    font-weight: bold;
+    -moz-box-sizing: content-box;
+    -webkit-box-sizing: content-box;
+    box-sizing: content-box;
 }
 
 .cesium-infoBox-bodyless .cesium-infoBox-title {

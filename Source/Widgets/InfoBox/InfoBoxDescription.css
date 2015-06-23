@@ -1,10 +1,15 @@
+@import url(../shared.css);
 body {
     margin: 0;
     padding: 0;
 }
 
 .cesium-infoBox-description {
-    font-size: 12px;
+    font-family: sans-serif;
+    font-size: 13px;
+    padding: 4px 10px;
+    margin-right: 4px;
+    color: #edffff;
 }
 
 .cesium-infoBox-description a:link,
@@ -15,43 +20,33 @@ body {
 }
 
 .cesium-infoBox-description table {
-    color: rgba(255, 255, 255, 1);
-    border-collapse:separate; 
+    color: #edffff;
 }
 
 .cesium-infoBox-defaultTable {
     width: 100%;
+    color: #edffff;
 }
 
 .cesium-infoBox-defaultTable tr:nth-child(odd) {
-    background-color: rgba(238, 238, 238, 1);
+    background-color: rgba(84, 84, 84, 0.8);
 }
 
 .cesium-infoBox-defaultTable tr:nth-child(even) {
-    background-color: rgba(255, 255, 255, 1);
+    background-color: rgba(84, 84, 84, 0.25);
 }
 
 .cesium-infoBox-defaultTable th {
     font-weight: normal;
-    padding: 4px;
-    text-align: left;
-    text-transform: uppercase;
-    vertical-align: top;
-    font-family: Lato, Raleway, Helvetica, Arial, sans-serif;
-    color: #333;
-    font-size: 11px;
+    padding: 3px;
+    vertical-align: middle;
+    text-align: center;
 }
 
 .cesium-infoBox-defaultTable td {
-    padding: 4px;
-    vertical-align: top;
+    padding: 3px;
+    vertical-align: middle;
     text-align: left;
-    color: rgba(153, 153, 153, 1);
-    word-break: break-word;
-    font-family: Lato, Raleway, Helvetica, Arial, sans-serif;
-    color: #333;
-    font-size: 11px;
-
 }
 
 .cesium-infoBox-description-lighter {

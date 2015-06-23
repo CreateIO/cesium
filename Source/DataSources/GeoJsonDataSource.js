@@ -127,7 +127,7 @@ define([
         }
 
         if (html.length > 0) {
-            html = '<table class="cesium-infoBox-defaultTable" cellspacing="0"><tbody>' + html + '</tbody></table>';
+            html = '<table class="cesium-infoBox-defaultTable"><tbody>' + html + '</tbody></table>';
         }
 
         return html;
@@ -751,11 +751,6 @@ define([
             }
         }
     });
-
-    GeoJsonDataSource.prototype.loadUrl = function(url, options) {
-        deprecationWarning('GeoJsonDataSource.prototype.loadUrl', 'GeoJsonDataSource.loadUrl has been deprecated.  You can now pass a url to GeoJsonDataSource.load.');
-        return this.load(url, options);
-    };
 
     /**
      * Asynchronously loads the provided GeoJSON or TopoJSON data, replacing any existing data.

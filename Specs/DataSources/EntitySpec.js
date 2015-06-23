@@ -83,6 +83,7 @@ defineSuite([
         var options = {
             id : 'someId',
             name : 'bob',
+            show : false,
             availability : new TimeIntervalCollection(),
             parent : new Entity(),
             customProperty : {},
@@ -110,6 +111,7 @@ defineSuite([
         entity = new Entity(options);
         expect(entity.id).toEqual(options.id);
         expect(entity.name).toEqual(options.name);
+        expect(entity.show).toBe(options.show);
         expect(entity.availability).toBe(options.availability);
         expect(entity.parent).toBe(options.parent);
         expect(entity.customProperty).toBe(options.customProperty);
@@ -356,5 +358,105 @@ defineSuite([
         expect(function() {
             entity.removeProperty('name');
         }).toThrowDeveloperError();
+    });
+
+    it('isShowing works without parent.', function() {
+        var entity = new Entity({
+            show : false
+        });
+        expect(entity.isShowing).toBe(false);
+
+        var listener = jasmine.createSpy('listener');
+        entity.definitionChanged.addEventListener(listener);
+
+        entity.show = true;
+        expect(listener.calls.count()).toBe(2);
+        expect(listener.calls.argsFor(0)).toEqual([entity, 'isShowing', true, false]);
+        expect(listener.calls.argsFor(1)).toEqual([entity, 'show', true, false]);
+        expect(entity.isShowing).toBe(true);
+
+        listener.calls.reset();
+
+        entity.show = false;
+        expect(listener.calls.count()).toBe(2);
+        expect(listener.calls.argsFor(0)).toEqual([entity, 'isShowing', false, true]);
+        expect(listener.calls.argsFor(1)).toEqual([entity, 'show', false, true]);
+        expect(entity.isShowing).toBe(false);
+    });
+
+    function ancestorShowTest(entity, ancestor) {
+        var listener = jasmine.createSpy('listener');
+        entity.definitionChanged.addEventListener(listener);
+
+        ancestor.show = false;
+
+        //Setting ancestor show to false causes entity to raise
+        //its own isShowing event, but not the show event.
+        expect(listener.calls.count()).toBe(1);
+        expect(listener.calls.argsFor(0)).toEqual([entity, 'isShowing', false, true]);
+        expect(entity.show).toBe(true);
+        expect(entity.isShowing).toBe(false);
+
+        listener.calls.reset();
+
+        //Since isShowing is already false, setting show to false causes the show event
+        //but not the isShowing event to be raised
+        entity.show = false;
+        expect(entity.show).toBe(false);
+        expect(listener.calls.count()).toBe(1);
+        expect(listener.calls.argsFor(0)).toEqual([entity, 'show', false, true]);
+
+        listener.calls.reset();
+
+        //Setting ancestor show to true does not trigger the entity.isShowing event
+        //because entity.show is false;
+        ancestor.show = true;
+        expect(entity.show).toBe(false);
+        expect(entity.isShowing).toBe(false);
+        expect(listener.calls.count()).toBe(0);
+
+        listener.calls.reset();
+
+        //Setting entity.show to try now causes both events to be raised
+        //because the ancestor is also showing.
+        entity.show = true;
+        expect(listener.calls.count()).toBe(2);
+        expect(listener.calls.argsFor(0)).toEqual([entity, 'isShowing', true, false]);
+        expect(listener.calls.argsFor(1)).toEqual([entity, 'show', true, false]);
+        expect(entity.show).toBe(true);
+        expect(entity.isShowing).toBe(true);
+    }
+
+    it('isShowing works with parent.', function() {
+        var parent = new Entity();
+        var entity = new Entity();
+        entity.parent = parent;
+        ancestorShowTest(entity, parent);
+    });
+
+    it('isShowing works with grandparent.', function() {
+        var grandparent = new Entity();
+        var parent = new Entity();
+        parent.parent = grandparent;
+        var entity = new Entity();
+        entity.parent = parent;
+        ancestorShowTest(entity, grandparent);
+    });
+
+    it('isShowing works when replacing parent.', function() {
+        var entity = new Entity();
+        entity.parent = new Entity();
+
+        var listener = jasmine.createSpy('listener');
+        entity.definitionChanged.addEventListener(listener);
+
+        entity.parent = new Entity({
+            show : false
+        });
+
+        expect(listener.calls.count()).toBe(2);
+        expect(listener.calls.argsFor(0)).toEqual([entity, 'isShowing', false, true]);
+        expect(entity.show).toBe(true);
+        expect(entity.isShowing).toBe(false);
     });
 });

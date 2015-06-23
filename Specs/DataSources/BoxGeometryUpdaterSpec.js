@@ -275,6 +275,26 @@ defineSuite([
         expect(attributes.show.value).toEqual(ShowGeometryInstanceAttribute.toValue(outline.getValue(time2)));
     });
 
+    it('createFillGeometryInstance obeys Entity.show is false.', function() {
+        var entity = createBasicBox();
+        entity.show = false;
+        entity.box.fill = true;
+        var updater = new BoxGeometryUpdater(entity, scene);
+        var instance = updater.createFillGeometryInstance(new JulianDate());
+        var attributes = instance.attributes;
+        expect(attributes.show.value).toEqual(ShowGeometryInstanceAttribute.toValue(false));
+    });
+
+    it('createOutlineGeometryInstance obeys Entity.show is false.', function() {
+        var entity = createBasicBox();
+        entity.show = false;
+        entity.box.outline = true;
+        var updater = new BoxGeometryUpdater(entity, scene);
+        var instance = updater.createFillGeometryInstance(new JulianDate());
+        var attributes = instance.attributes;
+        expect(attributes.show.value).toEqual(ShowGeometryInstanceAttribute.toValue(false));
+    });
+
     it('dynamic updater sets properties', function() {
         var entity = new Entity();
         entity.position = new ConstantPositionProperty(Cartesian3.fromDegrees(0, 0, 0));
@@ -297,6 +317,11 @@ defineSuite([
 
         expect(dynamicUpdater._options.id).toBe(entity);
         expect(dynamicUpdater._options.dimensions).toEqual(box.dimensions.getValue());
+
+        entity.show = false;
+        dynamicUpdater.update(JulianDate.now());
+        expect(primitives.length).toBe(0);
+        entity.show = true;
 
         box.show.setValue(false);
         dynamicUpdater.update(JulianDate.now());

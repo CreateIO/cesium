@@ -393,6 +393,16 @@ defineSuite([
         expect(viewer.proxy).toBe(proxy);
     });
 
+    it('can set proxy.', function() {
+        var proxy = {};
+
+        viewer = new Viewer(container);
+        viewer.extend(viewerDragDropMixin, {
+            proxy : proxy
+        });
+        expect(viewer.proxy).toBe(proxy);
+    });
+
     it('throws with undefined viewer', function() {
         expect(function() {
             viewerDragDropMixin(undefined);
@@ -435,6 +445,14 @@ defineSuite([
     it('throws if clearOnDrop property already added by another mixin.', function() {
         viewer = new Viewer(container);
         viewer.clearOnDrop = true;
+        expect(function() {
+            viewer.extend(viewerDragDropMixin);
+        }).toThrowDeveloperError();
+    });
+
+    it('throws if flyToOnDrop property already added by another mixin.', function() {
+        viewer = new Viewer(container);
+        viewer.flyToOnDrop = true;
         expect(function() {
             viewer.extend(viewerDragDropMixin);
         }).toThrowDeveloperError();
