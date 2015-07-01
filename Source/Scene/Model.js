@@ -13,6 +13,8 @@ define([
         '../Core/destroyObject',
         '../Core/DeveloperError',
         '../Core/Event',
+        '../Core/FeatureDetection',
+        '../Core/getStringFromTypedArray',
         '../Core/IndexDatatype',
         '../Core/loadArrayBuffer',
         '../Core/loadImage',
@@ -55,6 +57,8 @@ define([
         destroyObject,
         DeveloperError,
         Event,
+        FeatureDetection,
+        getStringFromTypedArray,
         IndexDatatype,
         loadArrayBuffer,
         loadImage,
@@ -85,6 +89,12 @@ define([
         SceneMode) {
     "use strict";
     /*global WebGLRenderingContext*/
+
+    // Bail out if the browser doesn't support typed arrays, to prevent the setup function
+    // from failing, since we won't be able to create a WebGL context anyway.
+    if (!FeatureDetection.supportsTypedArrays()) {
+        return {};
+    }
 
     var yUpToZUp = Matrix4.fromRotationTranslation(Matrix3.fromRotationX(CesiumMath.PI_OVER_TWO));
     var boundingSphereCartesian3Scratch = new Cartesian3();
