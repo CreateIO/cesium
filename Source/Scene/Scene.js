@@ -33,6 +33,7 @@ define([
         './Camera',
         './CreditDisplay',
         './CullingVolume',
+        './DepthPlane',
         './FrameState',
         './FrustumCommands',
         './FXAA',
@@ -87,6 +88,7 @@ define([
         Camera,
         CreditDisplay,
         CullingVolume,
+        DepthPlane,
         FrameState,
         FrustumCommands,
         FXAA,
@@ -238,6 +240,7 @@ define([
         }
 
         this._globeDepth = globeDepth;
+        this._depthPlane = new DepthPlane();
         this._oit = oit;
         this._fxaa = new FXAA();
 
@@ -860,9 +863,14 @@ define([
                 return this._mode;
             },
             set : function(value) {
+                //>>includeStart('debug', pragmas.debug);
+                if (!defined(value)) {
+                    throw new DeveloperError('value is required.');
+                }
                 if (this.scene3DOnly && value !== SceneMode.SCENE3D) {
                     throw new DeveloperError('Only SceneMode.SCENE3D is valid when scene3DOnly is true.');
                 }
+                //>>includeEnd('debug');
                 this._mode = value;
             }
         },
@@ -1344,7 +1352,8 @@ define([
         clear.execute(context, passState);
 
         // Update globe depth rendering based on the current context and clear the globe depth framebuffer.
-        if (defined(scene._globeDepth)) {
+        var useGlobeDepthFramebuffer = !picking && defined(scene._globeDepth);
+        if (useGlobeDepthFramebuffer) {
             scene._globeDepth.update(context);
             scene._globeDepth.clear(context, passState, clearColor);
         }
@@ -1360,6 +1369,13 @@ define([
             }
         }
 
+        if (defined(scene.globe) && !scene.globe.depthTestAgainstTerrain) {
+            // Update the depth plane that is rendered in 3D when the primitives are
+            // not depth tested against terrain so primitives on the backface
+            // of the globe are not picked.
+            scene._depthPlane.update(context, frameState);
+        }
+
         // If supported, configure OIT to use the globe depth framebuffer and clear the OIT framebuffer.
         var useOIT = !picking && renderTranslucentCommands && defined(scene._oit) && scene._oit.isSupported();
         if (useOIT) {
@@ -1371,14 +1387,13 @@ define([
         // If supported, configure FXAA to use the globe depth color texture and clear the FXAA framebuffer.
         var useFXAA = !picking && scene.fxaa;
         if (useFXAA) {
-            var fxaaTexture = !useOIT && defined(scene._globeDepth) ? scene._globeDepth._colorTexture : undefined;
-            scene._fxaa.update(context, fxaaTexture);
+            scene._fxaa.update(context);
             scene._fxaa.clear(context, passState, clearColor);
         }
 
         if (sunVisible && scene.sunBloom) {
             passState.framebuffer = scene._sunPostProcess.update(context);
-        } else if (defined(scene._globeDepth)) {
+        } else if (useGlobeDepthFramebuffer) {
             passState.framebuffer = scene._globeDepth.framebuffer;
         } else if (useFXAA) {
             passState.framebuffer = scene._fxaa.getColorFramebuffer();
@@ -1406,9 +1421,9 @@ define([
             sunCommand.execute(context, passState);
             if (scene.sunBloom) {
                 var framebuffer;
-                if (defined(scene._globeDepth)) {
+                if (useGlobeDepthFramebuffer) {
                     framebuffer = scene._globeDepth.framebuffer;
-                } else if (scene.fxaa) {
+                } else if (useFXAA) {
                     framebuffer = scene._fxaa.getColorFramebuffer();
                 } else {
                     framebuffer = originalFramebuffer;
@@ -1452,7 +1467,7 @@ define([
             var globeDepth = scene.debugShowGlobeDepth ? getDebugGlobeDepth(scene, index) : scene._globeDepth;
 
             var fb;
-            if (scene.debugShowGlobeDepth && defined(globeDepth)) {
+            if (scene.debugShowGlobeDepth && defined(globeDepth) && useGlobeDepthFramebuffer) {
                 fb = passState.framebuffer;
                 passState.framebuffer = globeDepth.framebuffer;
             }
@@ -1466,13 +1481,18 @@ define([
                 executeCommand(commands[j], scene, context, passState);
             }
 
-            if (defined(globeDepth) && (scene.copyGlobeDepth || scene.debugShowGlobeDepth)) {
+            if (defined(globeDepth) && useGlobeDepthFramebuffer && (scene.copyGlobeDepth || scene.debugShowGlobeDepth)) {
                 globeDepth.update(context);
                 globeDepth.executeCopyDepth(context, passState);
             }
 
-            if (scene.debugShowGlobeDepth && defined(globeDepth)) {
+            if (scene.debugShowGlobeDepth && defined(globeDepth) && useGlobeDepthFramebuffer) {
                 passState.framebuffer = fb;
+            }
+
+            if (defined(scene.globe) && !scene.globe.depthTestAgainstTerrain) {
+                clearDepth.execute(context, passState);
+                scene._depthPlane.execute(context, passState);
             }
 
             // Execute commands in order by pass up to the translucent pass.
@@ -1497,7 +1517,7 @@ define([
             commands.length = frustumCommands.indices[Pass.TRANSLUCENT];
             executeTranslucentCommands(scene, executeCommand, passState, commands);
 
-            if (defined(globeDepth)) {
+            if (defined(globeDepth) && useGlobeDepthFramebuffer) {
                 // PERFORMANCE_IDEA: Use MRT to avoid the extra copy.
                 var pickDepth = getPickDepth(scene, index);
                 pickDepth.update(context, globeDepth.framebuffer.depthStencilTexture);
@@ -1505,12 +1525,12 @@ define([
             }
         }
 
-        if (scene.debugShowGlobeDepth && defined(scene._globeDepth)) {
+        if (scene.debugShowGlobeDepth && useGlobeDepthFramebuffer) {
             var gd = getDebugGlobeDepth(scene, scene.debugShowDepthFrustum - 1);
             gd.executeDebugGlobeDepth(context, passState);
         }
 
-        if (scene.debugShowPickDepth && defined(scene._globeDepth)) {
+        if (scene.debugShowPickDepth && useGlobeDepthFramebuffer) {
             var pd = getPickDepth(scene, scene.debugShowDepthFrustum - 1);
             pd.executeDebugPickDepth(context, passState);
         }
@@ -1521,11 +1541,16 @@ define([
         }
 
         if (useFXAA) {
+            if (!useOIT && useGlobeDepthFramebuffer) {
+                passState.framebuffer = scene._fxaa.getColorFramebuffer();
+                scene._globeDepth.executeCopyColor(context, passState);
+            }
+
             passState.framebuffer = originalFramebuffer;
             scene._fxaa.execute(context, passState);
         }
 
-        if (!useOIT && !useFXAA && defined(scene._globeDepth)) {
+        if (!useOIT && !useFXAA && useGlobeDepthFramebuffer) {
             passState.framebuffer = originalFramebuffer;
             scene._globeDepth.executeCopyColor(context, passState);
         }
@@ -2067,10 +2092,14 @@ define([
         this._debugSphere = this._debugSphere && this._debugSphere.destroy();
         this.sun = this.sun && this.sun.destroy();
         this._sunPostProcess = this._sunPostProcess && this._sunPostProcess.destroy();
+        this._depthPlane = this._depthPlane && this._depthPlane.destroy();
 
         this._transitioner.destroy();
 
-        this._globeDepth.destroy();
+        if (defined(this._globeDepth)) {
+            this._globeDepth.destroy();
+        }
+
         if (defined(this._oit)) {
             this._oit.destroy();
         }
