@@ -1,122 +1,122 @@
 /*global define*/
 define([
-        '../Core/BoundingRectangle',
-        '../Core/BoundingSphere',
-        '../Core/BoxGeometry',
-        '../Core/Cartesian2',
-        '../Core/Cartesian3',
-        '../Core/Cartesian4',
-        '../Core/Color',
-        '../Core/ColorGeometryInstanceAttribute',
-        '../Core/createGuid',
-        '../Core/defaultValue',
-        '../Core/defined',
-        '../Core/defineProperties',
-        '../Core/destroyObject',
-        '../Core/DeveloperError',
-        '../Core/EllipsoidGeometry',
-        '../Core/Event',
-        '../Core/GeographicProjection',
-        '../Core/GeometryInstance',
-        '../Core/GeometryPipeline',
-        '../Core/getTimestamp',
-        '../Core/Intersect',
-        '../Core/Interval',
-        '../Core/JulianDate',
-        '../Core/Math',
-        '../Core/Matrix4',
-        '../Core/mergeSort',
-        '../Core/Occluder',
-        '../Core/ShowGeometryInstanceAttribute',
-        '../Renderer/ClearCommand',
-        '../Renderer/ComputeEngine',
-        '../Renderer/Context',
-        '../Renderer/ContextLimits',
-        '../Renderer/PassState',
-        '../Renderer/ShaderProgram',
-        './Camera',
-        './CreditDisplay',
-        './CullingVolume',
-        './DepthPlane',
-        './FrameState',
-        './FrustumCommands',
-        './FXAA',
-        './GlobeDepth',
-        './OIT',
-        './OrthographicFrustum',
-        './Pass',
-        './PerformanceDisplay',
-        './PerInstanceColorAppearance',
-        './PerspectiveFrustum',
-        './PerspectiveOffCenterFrustum',
-        './PickDepth',
-        './Primitive',
-        './PrimitiveCollection',
-        './SceneMode',
-        './SceneTransforms',
-        './SceneTransitioner',
-        './ScreenSpaceCameraController',
-        './SunPostProcess',
-        './TweenCollection'
-    ], function(
-        BoundingRectangle,
-        BoundingSphere,
-        BoxGeometry,
-        Cartesian2,
-        Cartesian3,
-        Cartesian4,
-        Color,
-        ColorGeometryInstanceAttribute,
-        createGuid,
-        defaultValue,
-        defined,
-        defineProperties,
-        destroyObject,
-        DeveloperError,
-        EllipsoidGeometry,
-        Event,
-        GeographicProjection,
-        GeometryInstance,
-        GeometryPipeline,
-        getTimestamp,
-        Intersect,
-        Interval,
-        JulianDate,
-        CesiumMath,
-        Matrix4,
-        mergeSort,
-        Occluder,
-        ShowGeometryInstanceAttribute,
-        ClearCommand,
-        ComputeEngine,
-        Context,
-        ContextLimits,
-        PassState,
-        ShaderProgram,
-        Camera,
-        CreditDisplay,
-        CullingVolume,
-        DepthPlane,
-        FrameState,
-        FrustumCommands,
-        FXAA,
-        GlobeDepth,
-        OIT,
-        OrthographicFrustum,
-        Pass,
-        PerformanceDisplay,
-        PerInstanceColorAppearance,
-        PerspectiveFrustum,
-        PerspectiveOffCenterFrustum,
-        PickDepth,
-        Primitive,
-        PrimitiveCollection,
-        SceneMode,
-        SceneTransforms,
-        SceneTransitioner,
-        ScreenSpaceCameraController,
-        SunPostProcess,
-        TweenCollection) {
+    '../Core/BoundingRectangle',
+    '../Core/BoundingSphere',
+    '../Core/BoxGeometry',
+    '../Core/Cartesian2',
+    '../Core/Cartesian3',
+    '../Core/Cartesian4',
+    '../Core/Color',
+    '../Core/ColorGeometryInstanceAttribute',
+    '../Core/createGuid',
+    '../Core/defaultValue',
+    '../Core/defined',
+    '../Core/defineProperties',
+    '../Core/destroyObject',
+    '../Core/DeveloperError',
+    '../Core/EllipsoidGeometry',
+    '../Core/Event',
+    '../Core/GeographicProjection',
+    '../Core/GeometryInstance',
+    '../Core/GeometryPipeline',
+    '../Core/getTimestamp',
+    '../Core/Intersect',
+    '../Core/Interval',
+    '../Core/JulianDate',
+    '../Core/Math',
+    '../Core/Matrix4',
+    '../Core/mergeSort',
+    '../Core/Occluder',
+    '../Core/ShowGeometryInstanceAttribute',
+    '../Renderer/ClearCommand',
+    '../Renderer/ComputeEngine',
+    '../Renderer/Context',
+    '../Renderer/ContextLimits',
+    '../Renderer/PassState',
+    '../Renderer/ShaderProgram',
+    './Camera',
+    './CreditDisplay',
+    './CullingVolume',
+    './DepthPlane',
+    './FrameState',
+    './FrustumCommands',
+    './FXAA',
+    './GlobeDepth',
+    './OIT',
+    './OrthographicFrustum',
+    './Pass',
+    './PerformanceDisplay',
+    './PerInstanceColorAppearance',
+    './PerspectiveFrustum',
+    './PerspectiveOffCenterFrustum',
+    './PickDepth',
+    './Primitive',
+    './PrimitiveCollection',
+    './SceneMode',
+    './SceneTransforms',
+    './SceneTransitioner',
+    './ScreenSpaceCameraController',
+    './SunPostProcess',
+    './TweenCollection'
+], function(
+    BoundingRectangle,
+    BoundingSphere,
+    BoxGeometry,
+    Cartesian2,
+    Cartesian3,
+    Cartesian4,
+    Color,
+    ColorGeometryInstanceAttribute,
+    createGuid,
+    defaultValue,
+    defined,
+    defineProperties,
+    destroyObject,
+    DeveloperError,
+    EllipsoidGeometry,
+    Event,
+    GeographicProjection,
+    GeometryInstance,
+    GeometryPipeline,
+    getTimestamp,
+    Intersect,
+    Interval,
+    JulianDate,
+    CesiumMath,
+    Matrix4,
+    mergeSort,
+    Occluder,
+    ShowGeometryInstanceAttribute,
+    ClearCommand,
+    ComputeEngine,
+    Context,
+    ContextLimits,
+    PassState,
+    ShaderProgram,
+    Camera,
+    CreditDisplay,
+    CullingVolume,
+    DepthPlane,
+    FrameState,
+    FrustumCommands,
+    FXAA,
+    GlobeDepth,
+    OIT,
+    OrthographicFrustum,
+    Pass,
+    PerformanceDisplay,
+    PerInstanceColorAppearance,
+    PerspectiveFrustum,
+    PerspectiveOffCenterFrustum,
+    PickDepth,
+    Primitive,
+    PrimitiveCollection,
+    SceneMode,
+    SceneTransforms,
+    SceneTransitioner,
+    ScreenSpaceCameraController,
+    SunPostProcess,
+    TweenCollection) {
     "use strict";
 
     /**
@@ -1081,8 +1081,7 @@ define([
         var length = commandList.length;
         for (var i = 0; i < length; ++i) {
             var command = commandList[i];
-            if (command) {
-                var pass = command.pass;
+            var pass = command.pass;
 
             if (pass === Pass.COMPUTE) {
                 computeList.push(command);
@@ -1092,8 +1091,8 @@ define([
                 var boundingVolume = command.boundingVolume;
                 if (defined(boundingVolume)) {
                     if (command.cull &&
-                            ((cullingVolume.computeVisibility(boundingVolume) === Intersect.OUTSIDE) ||
-                             (defined(occluder) && boundingVolume.isOccluded(occluder)))) {
+                        ((cullingVolume.computeVisibility(boundingVolume) === Intersect.OUTSIDE) ||
+                            (defined(occluder) && boundingVolume.isOccluded(occluder)))) {
                         continue;
                     }
 
@@ -1129,7 +1128,7 @@ define([
         var farToNearRatio = scene.farToNearRatio;
         var numFrustums = Math.ceil(Math.log(far / near) / Math.log(farToNearRatio));
         if (near !== Number.MAX_VALUE && (numFrustums !== numberOfFrustums || (frustumCommandsList.length !== 0 &&
-                (near < frustumCommandsList[0].near || far > frustumCommandsList[numberOfFrustums - 1].far)))) {
+            (near < frustumCommandsList[0].near || far > frustumCommandsList[numberOfFrustums - 1].far)))) {
             updateFrustums(near, far, farToNearRatio, numFrustums, frustumCommandsList);
             createPotentiallyVisibleSet(scene);
         }
@@ -1203,9 +1202,9 @@ define([
     }
 
     var transformFrom2D = new Matrix4(0.0, 0.0, 1.0, 0.0,
-                                        1.0, 0.0, 0.0, 0.0,
-                                        0.0, 1.0, 0.0, 0.0,
-                                        0.0, 0.0, 0.0, 1.0);
+        1.0, 0.0, 0.0, 0.0,
+        0.0, 1.0, 0.0, 0.0,
+        0.0, 0.0, 0.0, 1.0);
     transformFrom2D = Matrix4.inverseTransformation(transformFrom2D, transformFrom2D);
 
     function executeCommand(command, scene, context, passState, renderState, shaderProgram, debugFramebuffer) {
@@ -1320,10 +1319,10 @@ define([
         var boundingVolume = command.boundingVolume;
 
         return ((defined(command)) &&
-                 ((!defined(command.boundingVolume)) ||
-                  !command.cull ||
-                  ((cullingVolume.computeVisibility(boundingVolume) !== Intersect.OUTSIDE) &&
-                   (!defined(occluder) || !boundingVolume.isOccluded(occluder)))));
+            ((!defined(command.boundingVolume)) ||
+                !command.cull ||
+                ((cullingVolume.computeVisibility(boundingVolume) !== Intersect.OUTSIDE) &&
+                    (!defined(occluder) || !boundingVolume.isOccluded(occluder)))));
     }
 
     function translucentCompare(a, b, position) {
