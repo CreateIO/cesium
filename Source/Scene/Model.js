@@ -1016,8 +1016,10 @@ define([
 
     function getFailedLoadFunction(model, type, path) {
         return function() {
-            model._loadError = new RuntimeError('Failed to load ' + type + ': ' + path);
-            model._state = ModelState.FAILED;
+//  CFA - suppress this runtime error and handle it inside the calling application
+//            model._loadError = new RuntimeError('Failed to load external ' + type + ': ' + path);
+//            model._state = ModelState.FAILED;
+            model._state = -1;
         };
     }
 
@@ -2835,7 +2837,9 @@ define([
         var justLoaded = false;
 
         if (this._state === ModelState.FAILED) {
-            throw this._loadError;
+            // throw this._loadError;
+            // substitute our own error handler
+            this.loadErrorHandler(model._baseUri);       
         }
 
         if (this._state === ModelState.LOADING) {
