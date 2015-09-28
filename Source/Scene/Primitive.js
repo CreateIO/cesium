@@ -241,7 +241,7 @@ define([
         this._releaseGeometryInstances = defaultValue(options.releaseGeometryInstances, true);
         this._allowPicking = defaultValue(options.allowPicking, true);
         this._asynchronous = defaultValue(options.asynchronous, true);
-        this._compressVertices = false;
+        this._compressVertices = defaultValue(options.compressVertices, true);
 
         /**
          * When <code>true</code>, the renderer frustum culls and horizon culls the primitive's commands
