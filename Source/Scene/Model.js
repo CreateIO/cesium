@@ -154,16 +154,14 @@ define([
 
     LoadResources.prototype.finishedPendingLoads = function() {
         return ((this.pendingBufferLoads === 0) &&
-                (this.pendingShaderLoads === 0) &&
-                (this.pendingTextureLoads === 0));
+            (this.pendingShaderLoads === 0) &&
+            (this.pendingTextureLoads === 0));
     };
 
     LoadResources.prototype.finishedResourceCreation = function() {
         return ((this.buffersToCreate.length === 0) &&
                 (this.programsToCreate.length === 0) &&
-                (this.texturesToCreate.length === 0) &&
-                (this.texturesToCreateFromBufferView.length === 0) &&
-                (this.pendingBufferViewToImage === 0));
+                (this.texturesToCreate.length === 0));
     };
 
     LoadResources.prototype.finishedBuffersCreation = function() {
@@ -1016,10 +1014,8 @@ define([
 
     function getFailedLoadFunction(model, type, path) {
         return function() {
-//  CFA - suppress this runtime error and handle it inside the calling application
-//            model._loadError = new RuntimeError('Failed to load external ' + type + ': ' + path);
-//            model._state = ModelState.FAILED;
-            model._state = -1;
+            model._loadError = new RuntimeError('Failed to load ' + type + ': ' + path);
+            model._state = ModelState.FAILED;
         };
     }
 
@@ -1028,7 +1024,7 @@ define([
             var loadResources = model._loadResources;
             loadResources.buffers[name] = new Uint8Array(arrayBuffer);
             --loadResources.pendingBufferLoads;
-         };
+        };
     }
 
     function parseBuffers(model) {
@@ -1073,7 +1069,7 @@ define([
                 bufferView : undefined
             };
             --loadResources.pendingShaderLoads;
-         };
+        };
     }
 
     function parseShaders(model) {
@@ -1673,11 +1669,11 @@ define([
     function getChannelEvaluator(model, runtimeNode, targetPath, spline) {
         return function(localAnimationTime) {
 //  Workaround for https://github.com/KhronosGroup/glTF/issues/219
-/*
-            if (targetPath === 'translation') {
-                return;
-            }
-*/
+            /*
+             if (targetPath === 'translation') {
+             return;
+             }
+             */
             runtimeNode[targetPath] = spline.evaluate(localAnimationTime, runtimeNode[targetPath]);
             runtimeNode.dirtyNumber = model._maxDirtyNumber;
         };
@@ -1703,49 +1699,49 @@ define([
         var accessors = model.gltf.accessors;
         var name;
 
-         for (var animationName in animations) {
-             if (animations.hasOwnProperty(animationName)) {
-                 var animation = animations[animationName];
-                 var channels = animation.channels;
-                 var parameters = animation.parameters;
-                 var samplers = animation.samplers;
+        for (var animationName in animations) {
+            if (animations.hasOwnProperty(animationName)) {
+                var animation = animations[animationName];
+                var channels = animation.channels;
+                var parameters = animation.parameters;
+                var samplers = animation.samplers;
 
-                 var parameterValues = {};
+                var parameterValues = {};
 
-                 for (name in parameters) {
-                     if (parameters.hasOwnProperty(name)) {
-                         parameterValues[name] = ModelAnimationCache.getAnimationParameterValues(model, accessors[parameters[name]]);
-                     }
-                 }
+                for (name in parameters) {
+                    if (parameters.hasOwnProperty(name)) {
+                        parameterValues[name] = ModelAnimationCache.getAnimationParameterValues(model, accessors[parameters[name]]);
+                    }
+                }
 
-                 // Find start and stop time for the entire animation
-                 var startTime = Number.MAX_VALUE;
-                 var stopTime = -Number.MAX_VALUE;
+                // Find start and stop time for the entire animation
+                var startTime = Number.MAX_VALUE;
+                var stopTime = -Number.MAX_VALUE;
 
-                 var length = channels.length;
-                 var channelEvaluators = new Array(length);
+                var length = channels.length;
+                var channelEvaluators = new Array(length);
 
-                 for (var i = 0; i < length; ++i) {
-                     var channel = channels[i];
-                     var target = channel.target;
-                     var sampler = samplers[channel.sampler];
-                     var times = parameterValues[sampler.input];
+                for (var i = 0; i < length; ++i) {
+                    var channel = channels[i];
+                    var target = channel.target;
+                    var sampler = samplers[channel.sampler];
+                    var times = parameterValues[sampler.input];
 
-                     startTime = Math.min(startTime, times[0]);
-                     stopTime = Math.max(stopTime, times[times.length - 1]);
+                    startTime = Math.min(startTime, times[0]);
+                    stopTime = Math.max(stopTime, times[times.length - 1]);
 
-                     var spline = ModelAnimationCache.getAnimationSpline(model, animationName, animation, channel.sampler, sampler, parameterValues);
-                     // GLTF_SPEC: Support more targets like materials. https://github.com/KhronosGroup/glTF/issues/142
-                     channelEvaluators[i] = getChannelEvaluator(model, runtimeNodes[target.id], target.path, spline);
-                 }
+                    var spline = ModelAnimationCache.getAnimationSpline(model, animationName, animation, channel.sampler, sampler, parameterValues);
+                    // GLTF_SPEC: Support more targets like materials. https://github.com/KhronosGroup/glTF/issues/142
+                    channelEvaluators[i] = getChannelEvaluator(model, runtimeNodes[target.id], target.path, spline);
+                }
 
-                 model._runtime.animations[animationName] = {
-                     startTime : startTime,
-                     stopTime : stopTime,
-                     channelEvaluators : channelEvaluators
-                 };
-             }
-         }
+                model._runtime.animations[animationName] = {
+                    startTime : startTime,
+                    stopTime : stopTime,
+                    channelEvaluators : channelEvaluators
+                };
+            }
+        }
     }
 
     function createVertexArrays(model, context) {

@@ -1081,34 +1081,36 @@ define([
         var length = commandList.length;
         for (var i = 0; i < length; ++i) {
             var command = commandList[i];
-            var pass = command.pass;
+            if (command) {
+                var pass = command.pass;
 
-            if (pass === Pass.COMPUTE) {
-                computeList.push(command);
-            } else if (pass === Pass.OVERLAY) {
-                overlayList.push(command);
-            } else {
-                var boundingVolume = command.boundingVolume;
-                if (defined(boundingVolume)) {
-                    if (command.cull &&
-                            ((cullingVolume.computeVisibility(boundingVolume) === Intersect.OUTSIDE) ||
-                             (defined(occluder) && boundingVolume.isOccluded(occluder)))) {
-                        continue;
+                if (pass === Pass.COMPUTE) {
+                    computeList.push(command);
+                } else if (pass === Pass.OVERLAY) {
+                    overlayList.push(command);
+                } else {
+                    var boundingVolume = command.boundingVolume;
+                    if (defined(boundingVolume)) {
+                        if (command.cull &&
+                                ((cullingVolume.computeVisibility(boundingVolume) === Intersect.OUTSIDE) ||
+                                 (defined(occluder) && boundingVolume.isOccluded(occluder)))) {
+                            continue;
+                        }
+
+                        distances = boundingVolume.computePlaneDistances(position, direction, distances);
+                        near = Math.min(near, distances.start);
+                        far = Math.max(far, distances.stop);
+                    } else {
+                        // Clear commands don't need a bounding volume - just add the clear to all frustums.
+                        // If another command has no bounding volume, though, we need to use the camera's
+                        // worst-case near and far planes to avoid clipping something important.
+                        distances.start = camera.frustum.near;
+                        distances.stop = camera.frustum.far;
+                        undefBV = !(command instanceof ClearCommand);
                     }
 
-                    distances = boundingVolume.computePlaneDistances(position, direction, distances);
-                    near = Math.min(near, distances.start);
-                    far = Math.max(far, distances.stop);
-                } else {
-                    // Clear commands don't need a bounding volume - just add the clear to all frustums.
-                    // If another command has no bounding volume, though, we need to use the camera's
-                    // worst-case near and far planes to avoid clipping something important.
-                    distances.start = camera.frustum.near;
-                    distances.stop = camera.frustum.far;
-                    undefBV = !(command instanceof ClearCommand);
+                    insertIntoBin(scene, command, distances);
                 }
-
-                insertIntoBin(scene, command, distances);
             }
         }
 
