@@ -66,7 +66,7 @@ define([
 
     var crsLinkHrefs = {};
     var crsLinkTypes = {};
-    var defaultMarkerSize = 48;
+    var defaultMarkerSize = 0;
     var defaultMarkerSymbol;
     var defaultMarkerColor = Color.ROYALBLUE;
     var defaultStroke = Color.YELLOW;
