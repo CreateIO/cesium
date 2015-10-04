@@ -207,7 +207,7 @@ void main()\n\
         if (isFragmentShader) {
             result += '\
 #ifdef GL_FRAGMENT_PRECISION_HIGH\n\
-    precision highp float;\n\
+    precision mediump float;\n\
 #else\n\
     precision mediump float;\n\
 #endif\n\n';
