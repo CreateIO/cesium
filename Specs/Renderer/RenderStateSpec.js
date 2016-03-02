@@ -11,8 +11,7 @@ defineSuite([
         ContextLimits,
         WebGLConstants,
         createContext) {
-    "use strict";
-    /*global jasmine,describe,xdescribe,it,xit,expect,beforeEach,afterEach,beforeAll,afterAll,spyOn*/
+    'use strict';
 
     var context;
 
@@ -778,8 +777,6 @@ defineSuite([
                 invert : true
             }
         };
-
-        var r2 = RenderState.fromCache(r);
 
         var rs = RenderState.fromCache(RenderState.getState(r));
 

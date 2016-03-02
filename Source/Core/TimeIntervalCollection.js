@@ -17,7 +17,7 @@ define([
         Event,
         JulianDate,
         TimeInterval) {
-    "use strict";
+    'use strict';
 
     function compareIntervalStartTimes(left, right) {
         return JulianDate.compare(left.start, right.start);
@@ -30,7 +30,7 @@ define([
      *
      * @param {TimeInterval[]} [intervals] An array of intervals to add to the collection.
      */
-    var TimeIntervalCollection = function(intervals) {
+    function TimeIntervalCollection(intervals) {
         this._intervals = [];
         this._changedEvent = new Event();
 
@@ -40,7 +40,7 @@ define([
                 this.addInterval(intervals[i]);
             }
         }
-    };
+    }
 
     defineProperties(TimeIntervalCollection.prototype, {
         /**

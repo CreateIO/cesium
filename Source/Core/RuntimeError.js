@@ -3,7 +3,7 @@ define([
         './defined'
     ], function(
         defined) {
-    "use strict";
+    'use strict';
 
     /**
      * Constructs an exception object that is thrown due to an error that can occur at runtime, e.g.,
@@ -21,7 +21,7 @@ define([
      *
      * @see DeveloperError
      */
-    var RuntimeError = function(message) {
+    function RuntimeError(message) {
         /**
          * 'RuntimeError' indicating that this exception was thrown due to a runtime error.
          * @type {String}
@@ -50,8 +50,7 @@ define([
          * @readonly
          */
         this.stack = stack;
-    };
-
+    }
     RuntimeError.prototype.toString = function() {
         var str = this.name + ': ' + this.message;
 

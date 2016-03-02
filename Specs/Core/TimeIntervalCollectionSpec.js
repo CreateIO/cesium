@@ -7,8 +7,7 @@ defineSuite([
         TimeIntervalCollection,
         JulianDate,
         TimeInterval) {
-    "use strict";
-    /*global jasmine,describe,xdescribe,it,xit,expect,beforeEach,afterEach,beforeAll,afterAll,spyOn*/
+    'use strict';
 
     function TestObject(value) {
         this.value = value;

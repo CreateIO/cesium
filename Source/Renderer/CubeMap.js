@@ -31,9 +31,9 @@ define([
         TextureMagnificationFilter,
         TextureMinificationFilter,
         TextureWrap) {
-    "use strict";
+    'use strict';
 
-    var CubeMap = function(options) {
+    function CubeMap(options) {
 
         options = defaultValue(options, defaultValue.EMPTY_OBJECT);
 
@@ -170,7 +170,7 @@ define([
         this._negativeZ = new CubeMapFace(gl, texture, textureTarget, gl.TEXTURE_CUBE_MAP_NEGATIVE_Z, pixelFormat, pixelDatatype, size, preMultiplyAlpha, flipY);
 
         this.sampler = new Sampler();
-    };
+    }
 
     defineProperties(CubeMap.prototype, {
         positiveX : {

@@ -57,8 +57,7 @@ defineSuite([
         createFrameState,
         createScene,
         pollToPromise) {
-    "use strict";
-    /*global jasmine,describe,xdescribe,it,xit,expect,beforeEach,afterEach,beforeAll,afterAll,spyOn,fail*/
+    'use strict';
 
     var scene;
     var context;
@@ -86,13 +85,13 @@ defineSuite([
         scene.destroyForSpecs();
     });
 
-    var MockGlobePrimitive = function(primitive) {
+    function MockGlobePrimitive(primitive) {
         this._primitive = primitive;
-    };
-
-    MockGlobePrimitive.prototype.update = function(context, frameState, commandList) {
+    }
+    MockGlobePrimitive.prototype.update = function(frameState) {
+        var commandList = frameState.commandList;
         var startLength = commandList.length;
-        this._primitive.update(context, frameState, commandList);
+        this._primitive.update(frameState);
 
         for (var i = startLength; i < commandList.length; ++i) {
             var command = commandList[i];
@@ -171,7 +170,6 @@ defineSuite([
 
     it('constructs with options', function() {
         var geometryInstance = {};
-        var appearance = {};
 
         primitive = new GroundPrimitive({
             geometryInstance : geometryInstance,
@@ -260,11 +258,10 @@ defineSuite([
             asynchronous : false
         });
 
-        var frameState = createFrameState();
+        var frameState = createFrameState(context);
 
-        var commands = [];
-        primitive.update(context, frameState, commands);
-        expect(commands.length).toEqual(0);
+        primitive.update(frameState);
+        expect(frameState.commandList.length).toEqual(0);
     });
 
     it('does not render when show is false', function() {
@@ -277,19 +274,21 @@ defineSuite([
             asynchronous : false
         });
 
-        var frameState = createFrameState();
+        var frameState = createFrameState(context);
 
-        var commands = [];
-        primitive.update(context, frameState, commands);
+        frameState.commandList.length = 0;
+        primitive.update(frameState);
         expect(frameState.afterRender.length).toEqual(1);
-        frameState.afterRender[0]();
-        primitive.update(context, frameState, commands);
-        expect(commands.length).toBeGreaterThan(0);
 
-        commands.length = 0;
+        frameState.afterRender[0]();
+        frameState.commandList.length = 0;
+        primitive.update(frameState);
+        expect(frameState.commandList.length).toBeGreaterThan(0);
+
+        frameState.commandList.length = 0;
         primitive.show = false;
-        primitive.update(context, frameState, commands);
-        expect(commands.length).toEqual(0);
+        primitive.update(frameState);
+        expect(frameState.commandList.length).toEqual(0);
     });
 
     it('does not render other than for the color or pick pass', function() {
@@ -302,17 +301,16 @@ defineSuite([
             asynchronous : false
         });
 
-        var frameState = createFrameState();
+        var frameState = createFrameState(context);
         frameState.passes.render = false;
         frameState.passes.pick = false;
 
-        var commands = [];
-        primitive.update(context, frameState, commands);
-        expect(commands.length).toEqual(0);
+        primitive.update(frameState);
+        expect(frameState.commandList.length).toEqual(0);
     });
 
     function verifyGroundPrimitiveRender(primitive, color) {
-        scene.camera.viewRectangle(rectangle);
+        scene.camera.setView({ destination : rectangle });
 
         scene.groundPrimitives.add(depthPrimitive);
         var pixels = scene.renderForSpecs();
@@ -365,6 +363,40 @@ defineSuite([
         verifyGroundPrimitiveRender(primitive, rectColor);
     });
 
+    it('renders batched instances', function() {
+        if (!GroundPrimitive.isSupported(scene)) {
+            return;
+        }
+
+        var rectColorAttribute = ColorGeometryInstanceAttribute.fromColor(new Color(0.0, 1.0, 1.0, 1.0));
+        var rectangleInstance1 = new GeometryInstance({
+            geometry : new RectangleGeometry({
+                ellipsoid : ellipsoid,
+                rectangle : new Rectangle(rectangle.west, rectangle.south, rectangle.east, (rectangle.north + rectangle.south) * 0.5)
+            }),
+            id : 'rectangle1',
+            attributes : {
+                color : rectColorAttribute
+            }
+        });
+        var rectangleInstance2 = new GeometryInstance({
+            geometry : new RectangleGeometry({
+                ellipsoid : ellipsoid,
+                rectangle : new Rectangle(rectangle.west, (rectangle.north + rectangle.south) * 0.5, rectangle.east, rectangle.north)
+            }),
+            id : 'rectangle2',
+            attributes : {
+                color : rectColorAttribute
+            }
+        });
+
+        primitive = new GroundPrimitive({
+            geometryInstances : [rectangleInstance1, rectangleInstance2],
+            asynchronous : false
+        });
+        verifyGroundPrimitiveRender(primitive, rectColorAttribute.value);
+    });
+
     it('renders bounding volume with debugShowBoundingVolume', function() {
         if (!GroundPrimitive.isSupported(scene)) {
             return;
@@ -377,7 +409,7 @@ defineSuite([
         });
 
         scene.groundPrimitives.add(primitive);
-        scene.camera.viewRectangle(rectangle);
+        scene.camera.setView({ destination : rectangle });
         var pixels = scene.renderForSpecs();
         expect(pixels[1]).toBeGreaterThanOrEqualTo(0);
         expect(pixels[1]).toBeGreaterThanOrEqualTo(0);
@@ -530,14 +562,14 @@ defineSuite([
             compressVertices : false
         });
 
-        var frameState = createFrameState();
+        var frameState = createFrameState(context);
 
         return pollToPromise(function() {
             if (frameState.afterRender.length > 0) {
                 frameState.afterRender[0]();
                 return true;
             }
-            primitive.update(context, frameState, []);
+            primitive.update(frameState);
             return false;
         }).then(function() {
             return primitive.readyPromise.then(function(arg) {
@@ -562,14 +594,14 @@ defineSuite([
             compressVertices : false
         });
 
-        var frameState = createFrameState();
+        var frameState = createFrameState(context);
 
         return pollToPromise(function() {
             if (frameState.afterRender.length > 0) {
                 frameState.afterRender[0]();
                 return true;
             }
-            primitive.update(context, frameState, []);
+            primitive.update(frameState);
             return false;
         }).then(function() {
             return primitive.readyPromise.then(function(arg) {
@@ -577,6 +609,78 @@ defineSuite([
                 expect(primitive.ready).toBe(true);
             });
         });
+    });
+
+    it('update throws when batched instance colors are different', function() {
+        if (!GroundPrimitive.isSupported(scene)) {
+            return;
+        }
+
+        var rectColorAttribute = ColorGeometryInstanceAttribute.fromColor(new Color(0.0, 1.0, 1.0, 1.0));
+        var rectangleInstance1 = new GeometryInstance({
+            geometry : new RectangleGeometry({
+                ellipsoid : ellipsoid,
+                rectangle : new Rectangle(rectangle.west, rectangle.south, rectangle.east, (rectangle.north + rectangle.south) * 0.5)
+            }),
+            id : 'rectangle1',
+            attributes : {
+                color : rectColorAttribute
+            }
+        });
+        rectColorAttribute = ColorGeometryInstanceAttribute.fromColor(new Color(1.0, 1.0, 0.0, 1.0));
+        var rectangleInstance2 = new GeometryInstance({
+            geometry : new RectangleGeometry({
+                ellipsoid : ellipsoid,
+                rectangle : new Rectangle(rectangle.west, (rectangle.north + rectangle.south) * 0.5, rectangle.east, rectangle.north)
+            }),
+            id : 'rectangle2',
+            attributes : {
+                color : rectColorAttribute
+            }
+        });
+
+        primitive = new GroundPrimitive({
+            geometryInstances : [rectangleInstance1, rectangleInstance2],
+            asynchronous : false
+        });
+
+        expect(function() {
+            verifyGroundPrimitiveRender(primitive, rectColorAttribute.value);
+        }).toThrowDeveloperError();
+    });
+
+    it('update throws when one batched instance color is undefined', function() {
+        if (!GroundPrimitive.isSupported(scene)) {
+            return;
+        }
+
+        var rectColorAttribute = ColorGeometryInstanceAttribute.fromColor(new Color(0.0, 1.0, 1.0, 1.0));
+        var rectangleInstance1 = new GeometryInstance({
+            geometry : new RectangleGeometry({
+                ellipsoid : ellipsoid,
+                rectangle : new Rectangle(rectangle.west, rectangle.south, rectangle.east, (rectangle.north + rectangle.south) * 0.5)
+            }),
+            id : 'rectangle1',
+            attributes : {
+                color : rectColorAttribute
+            }
+        });
+        var rectangleInstance2 = new GeometryInstance({
+            geometry : new RectangleGeometry({
+                ellipsoid : ellipsoid,
+                rectangle : new Rectangle(rectangle.west, (rectangle.north + rectangle.south) * 0.5, rectangle.east, rectangle.north)
+            }),
+            id : 'rectangle2'
+        });
+
+        primitive = new GroundPrimitive({
+            geometryInstances : [rectangleInstance1, rectangleInstance2],
+            asynchronous : false
+        });
+
+        expect(function() {
+            verifyGroundPrimitiveRender(primitive, rectColorAttribute.value);
+        }).toThrowDeveloperError();
     });
 
     it('setting per instance attribute throws when value is undefined', function() {
@@ -609,10 +713,10 @@ defineSuite([
             allowPicking : false
         });
 
-        var frameState = createFrameState();
+        var frameState = createFrameState(context);
 
         return pollToPromise(function() {
-            primitive.update(context, frameState, []);
+            primitive.update(frameState);
             if (frameState.afterRender.length > 0) {
                 frameState.afterRender[0]();
             }
@@ -684,10 +788,10 @@ defineSuite([
             geometryInstance : rectangleInstance
         });
 
-        var frameState = createFrameState();
+        var frameState = createFrameState(context);
 
         return pollToPromise(function() {
-            primitive.update(context, frameState, []);
+            primitive.update(frameState);
             if (frameState.afterRender.length > 0) {
                 frameState.afterRender[0]();
             }
@@ -702,8 +806,8 @@ defineSuite([
             geometryInstance : rectangleInstance
         });
 
-        var frameState = createFrameState();
-        primitive.update(context, frameState, []);
+        var frameState = createFrameState(context);
+        primitive.update(frameState);
 
         primitive.destroy();
         expect(primitive.isDestroyed()).toEqual(true);

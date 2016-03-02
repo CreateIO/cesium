@@ -13,8 +13,7 @@ defineSuite([
         Ellipsoid,
         CesiumMath,
         WindingOrder) {
-    "use strict";
-    /*global jasmine,describe,xdescribe,it,xit,expect,beforeEach,afterEach,beforeAll,afterAll,spyOn*/
+    'use strict';
 
     beforeEach(function() {
         CesiumMath.setRandomNumberSeed(0.0);

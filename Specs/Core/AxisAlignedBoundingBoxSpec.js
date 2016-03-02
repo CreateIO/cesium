@@ -11,8 +11,7 @@ defineSuite([
         Cartesian4,
         Intersect,
         Plane) {
-    "use strict";
-    /*global jasmine,describe,xdescribe,it,xit,expect,beforeEach,afterEach,beforeAll,afterAll,spyOn*/
+    'use strict';
 
     var positions = [
                      new Cartesian3(3, -1, -3),

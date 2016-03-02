@@ -13,16 +13,14 @@ defineSuite([
         TimeInterval,
         TimeIntervalCollection,
         Entity) {
-    "use strict";
-    /*global jasmine,describe,xdescribe,it,xit,expect,beforeEach,afterEach,beforeAll,afterAll,spyOn*/
+    'use strict';
 
-    var CollectionListener = function() {
+    function CollectionListener() {
         this.timesCalled = 0;
         this.added = undefined;
         this.removed = undefined;
         this.changed = undefined;
-    };
-
+    }
     CollectionListener.prototype.onCollectionChanged = function(collection, added, removed, changed) {
         this.timesCalled++;
         this.added = added.slice(0);
@@ -52,6 +50,32 @@ defineSuite([
 
         entityCollection.remove(entity);
         expect(entityCollection.values.length).toEqual(0);
+    });
+
+    it('add sets entityCollection on entity', function() {
+        var entity = new Entity();
+        var entityCollection = new EntityCollection();
+
+        entityCollection.add(entity);
+        expect(entity.entityCollection).toBe(entityCollection);
+    });
+
+    it('Entity.isShowing changes when collection show changes.', function() {
+        var entity = new Entity();
+        var entityCollection = new EntityCollection();
+
+        entityCollection.add(entity);
+
+        expect(entity.isShowing).toBe(true);
+
+        var listener = jasmine.createSpy('listener');
+        entity.definitionChanged.addEventListener(listener);
+
+        entityCollection.show = false;
+
+        expect(listener.calls.count()).toBe(1);
+        expect(listener.calls.argsFor(0)).toEqual([entity, 'isShowing', false, true]);
+        expect(entity.isShowing).toBe(false);
     });
 
     it('add with template', function() {

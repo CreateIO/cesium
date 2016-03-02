@@ -7,14 +7,14 @@ define([
         defaultValue,
         PrimitiveType,
         Pass) {
-    "use strict";
+    'use strict';
 
     /**
      * Represents a command to the renderer for GPU Compute (using old-school GPGPU).
      *
      * @private
      */
-    var ComputeCommand = function(options) {
+    function ComputeCommand(options) {
         options = defaultValue(options, defaultValue.EMPTY_OBJECT);
 
         /**
@@ -105,7 +105,7 @@ define([
          * @see Scene#debugCommandFilter
          */
         this.owner = options.owner;
-    };
+    }
 
     /**
      * Executes the compute command.

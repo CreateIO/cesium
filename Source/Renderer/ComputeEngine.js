@@ -37,14 +37,14 @@ define([
         Framebuffer,
         RenderState,
         ShaderProgram) {
-    "use strict";
+    'use strict';
 
     /**
      * @private
      */
-    var ComputeEngine = function(context) {
+    function ComputeEngine(context) {
         this._context = context;
-    };
+    }
 
     var renderStateScratch;
     var drawCommandScratch = new DrawCommand({

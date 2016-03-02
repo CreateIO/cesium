@@ -9,8 +9,7 @@ defineSuite([
         Cartesian3,
         Ellipsoid,
         createPackableSpecs) {
-    "use strict";
-    /*global jasmine,describe,xdescribe,it,xit,expect,beforeEach,afterEach,beforeAll,afterAll,spyOn*/
+    'use strict';
 
     it('throws without a center', function() {
         expect(function() {
@@ -24,15 +23,6 @@ defineSuite([
         expect(function() {
             return new CircleOutlineGeometry({
                 center : Cartesian3.fromDegrees(0,0)
-            });
-        }).toThrowDeveloperError();
-    });
-
-    it('throws with a negative radius', function() {
-        expect(function() {
-            return new CircleOutlineGeometry({
-                center : Cartesian3.fromDegrees(0,0),
-                radius : -1.0
             });
         }).toThrowDeveloperError();
     });
@@ -55,8 +45,8 @@ defineSuite([
             radius : 1.0
         }));
 
-        expect(m.attributes.position.values.length).toEqual(3 * 6);
-        expect(m.indices.length).toEqual(2 * 6);
+        expect(m.attributes.position.values.length).toEqual(3 * 8);
+        expect(m.indices.length).toEqual(2 * 8);
         expect(m.boundingSphere.radius).toEqual(1);
     });
 
@@ -69,8 +59,8 @@ defineSuite([
             extrudedHeight : 10000
         }));
 
-        expect(m.attributes.position.values.length).toEqual(2 * 6 * 3);
-        expect(m.indices.length).toEqual(2 * 6 * 2 + 16 * 2);
+        expect(m.attributes.position.values.length).toEqual(2 * 8 * 3);
+        expect(m.indices.length).toEqual(2 * 8 * 2 + 16 * 2);
     });
 
     it('computes positions extruded, no lines between top and bottom', function() {
@@ -83,8 +73,25 @@ defineSuite([
             numberOfVerticalLines : 0
         }));
 
-        expect(m.attributes.position.values.length).toEqual(2 * 6 * 3);
-        expect(m.indices.length).toEqual(2 * 6 * 2);
+        expect(m.attributes.position.values.length).toEqual(2 * 8 * 3);
+        expect(m.indices.length).toEqual(2 * 8 * 2);
+    });
+
+    it('undefined is returned if radius is equal to or less than zero', function () {
+        var circleOutline0 = new CircleOutlineGeometry({
+            center : Cartesian3.fromDegrees(-75.59777, 40.03883),
+            radius : 0.0
+        });
+        var circleOutline1 = new CircleOutlineGeometry({
+            center : Cartesian3.fromDegrees(-75.59777, 40.03883),
+            radius : -10.0
+        });
+
+        var geometry0 = CircleOutlineGeometry.createGeometry(circleOutline0);
+        var geometry1 = CircleOutlineGeometry.createGeometry(circleOutline1);
+
+        expect(geometry0).toBeUndefined();
+        expect(geometry1).toBeUndefined();
     });
 
     var center = new Cartesian3(8, 9, 10);

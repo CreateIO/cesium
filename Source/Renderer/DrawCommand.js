@@ -5,14 +5,14 @@ define([
     ], function(
         defaultValue,
         PrimitiveType) {
-    "use strict";
+    'use strict';
 
     /**
      * Represents a command to the renderer for drawing.
      *
      * @private
      */
-    var DrawCommand = function(options) {
+    function DrawCommand(options) {
         options = defaultValue(options, defaultValue.EMPTY_OBJECT);
 
         /**
@@ -93,6 +93,14 @@ define([
          * @default 0
          */
         this.offset = defaultValue(options.offset, 0);
+
+        /**
+         * The number of instances to draw.
+         *
+         * @type {Number}
+         * @default 1
+         */
+        this.instanceCount = defaultValue(options.instanceCount, 0);
 
         /**
          * The shader program to apply.
@@ -180,7 +188,7 @@ define([
          * @private
          */
         this.oit = undefined;
-    };
+    }
 
     /**
      * Executes the draw command.

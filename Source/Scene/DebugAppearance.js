@@ -11,7 +11,7 @@ define([
         defineProperties,
         DeveloperError,
         Appearance) {
-    "use strict";
+    'use strict';
 
     /**
      * Visualizes a vertex attribute by displaying it as a color for debugging.
@@ -41,7 +41,7 @@ define([
      *   })
      * });
      */
-    var DebugAppearance = function(options) {
+    function DebugAppearance(options) {
         options = defaultValue(options, defaultValue.EMPTY_OBJECT);
         var attributeName = options.attributeName;
 
@@ -129,7 +129,7 @@ define([
 
         this._attributeName = attributeName;
         this._glslDatatype = glslDatatype;
-    };
+    }
 
     defineProperties(DebugAppearance.prototype, {
         /**

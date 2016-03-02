@@ -6,7 +6,8 @@ define([
         '../Core/destroyObject',
         '../Core/DeveloperError',
         '../Core/IndexDatatype',
-        './BufferUsage'
+        './BufferUsage',
+        './WebGLConstants'
     ], function(
         defaultValue,
         defined,
@@ -14,13 +15,14 @@ define([
         destroyObject,
         DeveloperError,
         IndexDatatype,
-        BufferUsage) {
-    "use strict";
+        BufferUsage,
+        WebGLConstants) {
+    'use strict';
 
     /**
      * @private
      */
-    var Buffer = function(options) {
+    function Buffer(options) {
         options = defaultValue(options, defaultValue.EMPTY_OBJECT);
 
         //>>includeStart('debug', pragmas.debug);
@@ -73,7 +75,7 @@ define([
         this._usage = usage;
         this._buffer = buffer;
         this.vertexArrayDestroyable = true;
-    };
+    }
 
     /**
      * Creates a vertex buffer, which contains untyped vertex data in GPU-controlled memory.
@@ -92,9 +94,6 @@ define([
      * @exception {DeveloperError} The buffer size must be greater than zero.
      * @exception {DeveloperError} Invalid <code>usage</code>.
      *
-     * @see {@link https://www.khronos.org/opengles/sdk/docs/man/xhtml/glGenBuffer.xml|glGenBuffer}
-     * @see {@link https://www.khronos.org/opengles/sdk/docs/man/xhtml/glBindBuffer.xml|glBindBuffer} with <code>ARRAY_BUFFER</code>
-     * @see {@link https://www.khronos.org/opengles/sdk/docs/man/xhtml/glBufferData.xml|glBufferData} with <code>ARRAY_BUFFER</code>
      *
      * @example
      * // Example 1. Create a dynamic vertex buffer 16 bytes in size.
@@ -113,6 +112,10 @@ define([
      *     typedArray : new Float32Array([0, 0, 0]),
      *     usage : BufferUsage.STATIC_DRAW
      * });
+     * 
+     * @see {@link https://www.khronos.org/opengles/sdk/docs/man/xhtml/glGenBuffer.xml|glGenBuffer}
+     * @see {@link https://www.khronos.org/opengles/sdk/docs/man/xhtml/glBindBuffer.xml|glBindBuffer} with <code>ARRAY_BUFFER</code>
+     * @see {@link https://www.khronos.org/opengles/sdk/docs/man/xhtml/glBufferData.xml|glBufferData} with <code>ARRAY_BUFFER</code>
      */
     Buffer.createVertexBuffer = function(options) {
         //>>includeStart('debug', pragmas.debug);
@@ -123,7 +126,7 @@ define([
 
         return new Buffer({
             context: options.context,
-            bufferTarget: options.context._gl.ARRAY_BUFFER,
+            bufferTarget: WebGLConstants.ARRAY_BUFFER,
             typedArray: options.typedArray,
             sizeInBytes: options.sizeInBytes,
             usage: options.usage
@@ -151,9 +154,6 @@ define([
      * @exception {DeveloperError} Invalid <code>usage</code>.
      * @exception {DeveloperError} Invalid <code>indexDatatype</code>.
      *
-     * @see {@link https://www.khronos.org/opengles/sdk/docs/man/xhtml/glGenBuffer.xml|glGenBuffer}
-     * @see {@link https://www.khronos.org/opengles/sdk/docs/man/xhtml/glBindBuffer.xml|glBindBuffer} with <code>ELEMENT_ARRAY_BUFFER</code>
-     * @see {@link https://www.khronos.org/opengles/sdk/docs/man/xhtml/glBufferData.xml|glBufferData} with <code>ELEMENT_ARRAY_BUFFER</code>
      *
      * @example
      * // Example 1. Create a stream index buffer of unsigned shorts that is
@@ -173,6 +173,10 @@ define([
      *     usage : BufferUsage.STATIC_DRAW,
      *     indexDatatype : IndexDatatype.UNSIGNED_SHORT
      * });
+     * 
+     * @see {@link https://www.khronos.org/opengles/sdk/docs/man/xhtml/glGenBuffer.xml|glGenBuffer}
+     * @see {@link https://www.khronos.org/opengles/sdk/docs/man/xhtml/glBindBuffer.xml|glBindBuffer} with <code>ELEMENT_ARRAY_BUFFER</code>
+     * @see {@link https://www.khronos.org/opengles/sdk/docs/man/xhtml/glBufferData.xml|glBufferData} with <code>ELEMENT_ARRAY_BUFFER</code>
      */
     Buffer.createIndexBuffer = function(options) {
         //>>includeStart('debug', pragmas.debug);
@@ -195,7 +199,7 @@ define([
         var bytesPerIndex = IndexDatatype.getSizeInBytes(indexDatatype);
         var buffer = new Buffer({
             context : context,
-            bufferTarget : context._gl.ELEMENT_ARRAY_BUFFER,
+            bufferTarget : WebGLConstants.ELEMENT_ARRAY_BUFFER,
             typedArray : options.typedArray,
             sizeInBytes : options.sizeInBytes,
             usage : options.usage

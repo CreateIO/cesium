@@ -29,8 +29,7 @@ defineSuite([
         TileCoordinatesImageryProvider,
         DomEventSimulator,
         pollToPromise) {
-    "use strict";
-    /*global jasmine,describe,xdescribe,it,xit,expect,beforeEach,afterEach,beforeAll,afterAll,spyOn*/
+    'use strict';
 
     var container;
     var widget;
@@ -55,7 +54,6 @@ defineSuite([
         options = defaultValue(options, {});
         options.contextOptions = defaultValue(options.contextOptions, {});
         options.contextOptions.webgl = defaultValue(options.contextOptions.webgl, {});
-        options.contextOptions.webgl.failIfMajorPerformanceCaveat = false;
 
         return new CesiumWidget(container, options);
     }

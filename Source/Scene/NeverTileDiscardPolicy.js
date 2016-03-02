@@ -1,6 +1,6 @@
 /*global define*/
 define([], function() {
-    "use strict";
+    'use strict';
 
     /**
      * A {@link TileDiscardPolicy} specifying that tile images should never be discard.
@@ -10,8 +10,8 @@ define([], function() {
      *
      * @see DiscardMissingTileImagePolicy
      */
-    var NeverTileDiscardPolicy = function(options) {
-    };
+    function NeverTileDiscardPolicy(options) {
+    }
 
     /**
      * Determines if the discard policy is ready to process images.

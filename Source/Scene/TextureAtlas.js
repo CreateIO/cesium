@@ -31,7 +31,7 @@ define([
         RenderState,
         Texture,
         when) {
-    "use strict";
+    'use strict';
 
     // The atlas is made up of regions of space called nodes that contain images or child nodes.
     function TextureAtlasNode(bottomLeft, topRight, childNode1, childNode2, imageIndex) {
@@ -65,7 +65,7 @@ define([
      *
      * @private
      */
-    var TextureAtlas = function(options) {
+    function TextureAtlas(options) {
         options = defaultValue(options, defaultValue.EMPTY_OBJECT);
         var borderWidthInPixels = defaultValue(options.borderWidthInPixels, 1.0);
         var initialSize = defaultValue(options.initialSize, defaultInitialSize);
@@ -117,7 +117,7 @@ define([
         this._copyCommand = this._context.createViewportQuadCommand(fs, {
             uniformMap : uniformMap
         });
-    };
+    }
 
     defineProperties(TextureAtlas.prototype, {
         /**
@@ -476,10 +476,11 @@ define([
      *
      * @exception {DeveloperError} This object was destroyed, i.e., destroy() was called.
      *
-     * @see TextureAtlas#isDestroyed
      *
      * @example
      * atlas = atlas && atlas.destroy();
+     * 
+     * @see TextureAtlas#isDestroyed
      */
     TextureAtlas.prototype.destroy = function() {
         this._texture = this._texture && this._texture.destroy();

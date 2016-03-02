@@ -17,7 +17,7 @@ define([
         PerInstanceFlatColorAppearanceFS,
         PerInstanceFlatColorAppearanceVS,
         Appearance) {
-    "use strict";
+    'use strict';
 
     /**
      * An appearance for {@link GeometryInstance} instances with color attributes.
@@ -35,8 +35,6 @@ define([
      * @param {String} [options.vertexShaderSource] Optional GLSL vertex shader source to override the default vertex shader.
      * @param {String} [options.fragmentShaderSource] Optional GLSL fragment shader source to override the default fragment shader.
      * @param {RenderState} [options.renderState] Optional render state to override the default render state.
-     *
-     * @demo {@link http://cesiumjs.org/Cesium/Apps/Sandcastle/index.html?src=Per%20Instance%20Color.html|Cesium Sandcastle Per Instance Color Appearance Demo}
      *
      * @example
      * // A solid white line segment
@@ -82,7 +80,7 @@ define([
      *   appearance : new Cesium.PerInstanceColorAppearance()
      * });
      */
-    var PerInstanceColorAppearance = function(options) {
+    function PerInstanceColorAppearance(options) {
         options = defaultValue(options, defaultValue.EMPTY_OBJECT);
 
         var translucent = defaultValue(options.translucent, true);
@@ -122,7 +120,7 @@ define([
         this._vertexFormat = vertexFormat;
         this._flat = flat;
         this._faceForward = defaultValue(options.faceForward, !closed);
-    };
+    }
 
     defineProperties(PerInstanceColorAppearance.prototype, {
         /**

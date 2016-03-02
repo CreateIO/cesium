@@ -3,19 +3,15 @@ define([
         './Cartesian3',
         './defaultValue',
         './defined',
-        './deprecationWarning',
         './DeveloperError',
-        './Intersect',
-        './Plane'
+        './Intersect'
     ], function(
         Cartesian3,
         defaultValue,
         defined,
-        deprecationWarning,
         DeveloperError,
-        Intersect,
-        Plane) {
-    "use strict";
+        Intersect) {
+    'use strict';
 
     /**
      * Creates an instance of an AxisAlignedBoundingBox from the minimum and maximum points along the x, y, and z axes.
@@ -29,7 +25,7 @@ define([
      * @see BoundingSphere
      * @see BoundingRectangle
      */
-    var AxisAlignedBoundingBox = function(minimum, maximum, center) {
+    function AxisAlignedBoundingBox(minimum, maximum, center) {
         /**
          * The minimum point defining the bounding box.
          * @type {Cartesian3}
@@ -57,7 +53,7 @@ define([
          * @type {Cartesian3}
          */
         this.center = center;
-    };
+    }
 
     /**
      * Computes an instance of an AxisAlignedBoundingBox. The box is determined by

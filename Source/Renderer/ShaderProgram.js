@@ -2,7 +2,6 @@
 define([
         '../Core/defaultValue',
         '../Core/defined',
-        '../Core/definedNotNull',
         '../Core/defineProperties',
         '../Core/destroyObject',
         '../Core/DeveloperError',
@@ -14,7 +13,6 @@ define([
     ], function(
         defaultValue,
         defined,
-        definedNotNull,
         defineProperties,
         destroyObject,
         DeveloperError,
@@ -23,15 +21,14 @@ define([
         ContextLimits,
         createUniform,
         createUniformArray) {
-    "use strict";
-    /*global console*/
+    'use strict';
 
     var nextShaderProgramId = 0;
 
     /**
      * @private
      */
-    var ShaderProgram = function(options) {
+    function ShaderProgram(options) {
         var modifiedFS = handleUniformPrecisionMismatches(options.vertexShaderText, options.fragmentShaderText);
 
         this._gl = options.gl;
@@ -63,8 +60,7 @@ define([
          * @private
          */
         this.id = nextShaderProgramId++;
-    };
-
+    }
     ShaderProgram.fromCache = function(options) {
         options = defaultValue(options, defaultValue.EMPTY_OBJECT);
 
@@ -137,7 +133,7 @@ define([
     function extractUniforms(shaderText) {
         var uniformNames = [];
         var uniformLines = shaderText.match(/uniform.*?(?![^{]*})(?=[=\[;])/g);
-        if (definedNotNull(uniformLines)) {
+        if (defined(uniformLines)) {
             var len = uniformLines.length;
             for (var i = 0; i < len; i++) {
                 var line = uniformLines[i].trim();
@@ -167,9 +163,9 @@ define([
                 for (j = 0; j < fragmentUniformsCount; j++) {
                     if (vertexShaderUniforms[i] === fragmentShaderUniforms[j]) {
                         uniformName = vertexShaderUniforms[i];
-                        duplicateName = "czm_mediump_" + uniformName;
+                        duplicateName = 'czm_mediump_' + uniformName;
                         // Update fragmentShaderText with renamed uniforms
-                        var re = new RegExp(uniformName + "\\b", "g");
+                        var re = new RegExp(uniformName + '\\b', 'g');
                         fragmentShaderText = fragmentShaderText.replace(re, duplicateName);
                         duplicateUniformNames[duplicateName] = uniformName;
                     }

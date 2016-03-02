@@ -19,8 +19,7 @@ define([
         RenderState,
         ShaderProgram,
         VertexArray) {
-    "use strict";
-    /*global expect*/
+    'use strict';
 
     function renderFragment(context, fs, depth, clear) {
         var vs = 'attribute vec4 position; void main() { gl_PointSize = 1.0; gl_Position = position; }';

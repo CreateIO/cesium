@@ -21,8 +21,7 @@ defineSuite([
         ImageryProvider,
         ImageryState,
         pollToPromise) {
-    "use strict";
-    /*global jasmine,describe,xdescribe,it,xit,expect,beforeEach,afterEach,beforeAll,afterAll,spyOn*/
+    'use strict';
 
     afterEach(function() {
         loadImage.createImage = loadImage.defaultCreateImage;
@@ -34,6 +33,17 @@ defineSuite([
 
     it('can be default constructed', function() {
         return new OpenStreetMapImageryProvider();
+    });
+
+    it('resolves readyPromise', function() {
+        var provider = new OpenStreetMapImageryProvider({
+            url : 'made/up/osm/server/'
+        });
+
+        return provider.readyPromise.then(function(result) {
+            expect(result).toBe(true);
+            expect(provider.ready).toBe(true);
+        });
     });
 
     it('returns valid value for hasAlphaChannel', function() {

@@ -23,7 +23,7 @@ define([
         BlendingState,
         Material,
         Pass) {
-    "use strict";
+    'use strict';
 
     /**
      * A viewport aligned quad.
@@ -38,7 +38,7 @@ define([
      * var viewportQuad = new Cesium.ViewportQuad(new Cesium.BoundingRectangle(0, 0, 80, 40));
      * viewportQuad.material.uniforms.color = new Cesium.Color(1.0, 0.0, 0.0, 1.0);
      */
-    var ViewportQuad = function(rectangle, material) {
+    function ViewportQuad(rectangle, material) {
         /**
          * Determines if the viewport quad primitive will be shown.
          *
@@ -90,7 +90,7 @@ define([
 
         this._overlayCommand = undefined;
         this._rs = undefined;
-    };
+    }
 
     /**
      * Called when {@link Viewer} or {@link CesiumWidget} render the scene to
@@ -103,7 +103,7 @@ define([
      * @exception {DeveloperError} this.material must be defined.
      * @exception {DeveloperError} this.rectangle must be defined.
      */
-    ViewportQuad.prototype.update = function(context, frameState, commandList) {
+    ViewportQuad.prototype.update = function(frameState) {
         if (!this.show) {
             return;
         }
@@ -127,6 +127,8 @@ define([
 
         var pass = frameState.passes;
         if (pass.render) {
+            var context = frameState.context;
+
             if (this._material !== this.material || !defined(this._overlayCommand)) {
                 // Recompile shader when material changes
                 this._material = this.material;
@@ -149,7 +151,7 @@ define([
             this._material.update(context);
 
             this._overlayCommand.uniformMap = this._material._uniforms;
-            commandList.push(this._overlayCommand);
+            frameState.commandList.push(this._overlayCommand);
         }
     };
 
@@ -179,10 +181,11 @@ define([
      *
      * @exception {DeveloperError} This object was destroyed, i.e., destroy() was called.
      *
-     * @see ViewportQuad#isDestroyed
      *
      * @example
      * quad = quad && quad.destroy();
+     *
+     * @see ViewportQuad#isDestroyed
      */
     ViewportQuad.prototype.destroy = function() {
         if (defined(this._overlayCommand)) {

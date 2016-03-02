@@ -41,7 +41,7 @@ define([
         BlendingState,
         CullFace,
         SceneMode) {
-    "use strict";
+    'use strict';
 
     /**
      * An atmosphere drawn around the limb of the provided ellipsoid.  Based on
@@ -61,7 +61,7 @@ define([
      *
      * @see Scene.skyAtmosphere
      */
-    var SkyAtmosphere = function(ellipsoid) {
+    function SkyAtmosphere(ellipsoid) {
         ellipsoid = defaultValue(ellipsoid, Ellipsoid.WGS84);
 
         /**
@@ -113,7 +113,7 @@ define([
                 return (1.0 / (that._outerRadius - innerRadius)) / rayleighScaleDepth;
             }
         };
-    };
+    }
 
     defineProperties(SkyAtmosphere.prototype, {
         /**
@@ -133,7 +133,7 @@ define([
     /**
      * @private
      */
-    SkyAtmosphere.prototype.update = function(context, frameState) {
+    SkyAtmosphere.prototype.update = function(frameState) {
         if (!this.show) {
             return undefined;
         }
@@ -151,6 +151,8 @@ define([
         var command = this._command;
 
         if (!defined(command.vertexArray)) {
+            var context = frameState.context;
+
             var geometry = EllipsoidGeometry.createGeometry(new EllipsoidGeometry({
                 radii : Cartesian3.multiplyByScalar(this._ellipsoid.radii, 1.025, new Cartesian3()),
                 slicePartitions : 256,
@@ -234,10 +236,11 @@ define([
      *
      * @exception {DeveloperError} This object was destroyed, i.e., destroy() was called.
      *
-     * @see SkyAtmosphere#isDestroyed
      *
      * @example
      * skyAtmosphere = skyAtmosphere && skyAtmosphere.destroy();
+     * 
+     * @see SkyAtmosphere#isDestroyed
      */
     SkyAtmosphere.prototype.destroy = function() {
         var command = this._command;

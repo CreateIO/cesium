@@ -13,8 +13,7 @@ defineSuite([
         createViewer,
         DomEventSimulator,
         pollToPromise) {
-    "use strict";
-    /*global jasmine,describe,xdescribe,it,xit,expect,beforeEach,afterEach,beforeAll,afterAll,spyOn*/
+    'use strict';
 
     var container;
     var viewer;
@@ -312,7 +311,7 @@ defineSuite([
         });
     });
 
-    var MockContainer = function() {
+    function MockContainer() {
         var events = {};
         this.events = events;
 
@@ -329,7 +328,7 @@ defineSuite([
             expect(subscribed.bubble).toEqual(bubble);
             delete events[name];
         };
-    };
+    }
 
     it('enable/disable subscribes to provided dropTarget.', function() {
         var dropTarget = new MockContainer();

@@ -14,7 +14,8 @@ define([
         './Sampler',
         './TextureMagnificationFilter',
         './TextureMinificationFilter',
-        './TextureWrap'
+        './TextureWrap',
+        './WebGLConstants'
     ], function(
         Cartesian2,
         defaultValue,
@@ -30,10 +31,11 @@ define([
         Sampler,
         TextureMagnificationFilter,
         TextureMinificationFilter,
-        TextureWrap) {
-    "use strict";
+        TextureWrap,
+        WebGLConstants) {
+    'use strict';
     
-    var Texture = function(options) {
+    function Texture(options) {
         options = defaultValue(options, defaultValue.EMPTY_OBJECT);
 
         //>>includeStart('debug', pragmas.debug);
@@ -43,11 +45,34 @@ define([
         //>>includeEnd('debug');
 
         var context = options.context;
+        var width = options.width;
+        var height = options.height;
         var source = options.source;
-        var width = defined(source) ? source.width : options.width;
-        var height = defined(source) ? source.height : options.height;
+
+        if (defined(source)) {
+            if (!defined(width)) {
+                width = defaultValue(source.videoWidth, source.width);
+            }
+            if (!defined(height)) {
+                height = defaultValue(source.videoHeight, source.height);
+            }
+        }
+
         var pixelFormat = defaultValue(options.pixelFormat, PixelFormat.RGBA);
         var pixelDatatype = defaultValue(options.pixelDatatype, PixelDatatype.UNSIGNED_BYTE);
+        var internalFormat = pixelFormat;
+
+        if (context.webgl2) {
+            if (pixelFormat === PixelFormat.DEPTH_STENCIL) {
+                internalFormat = WebGLConstants.DEPTH24_STENCIL8;
+            } else if (pixelFormat === PixelFormat.DEPTH_COMPONENT) {
+                if (pixelDatatype === PixelDatatype.UNSIGNED_SHORT) {
+                    internalFormat = WebGLConstants.DEPTH_COMPONENT16;
+                } else if (pixelDatatype === PixelDatatype.UNSIGNED_INT) {
+                    internalFormat = WebGLConstants.DEPTH_COMPONENT24;
+                }
+            }
+        }
 
         //>>includeStart('debug', pragmas.debug);
         if (!defined(width) || !defined(height)) {
@@ -83,8 +108,8 @@ define([
             throw new DeveloperError('When options.pixelFormat is DEPTH_COMPONENT, options.pixelDatatype must be UNSIGNED_SHORT or UNSIGNED_INT.');
         }
 
-        if ((pixelFormat === PixelFormat.DEPTH_STENCIL) && (pixelDatatype !== PixelDatatype.UNSIGNED_INT_24_8_WEBGL)) {
-            throw new DeveloperError('When options.pixelFormat is DEPTH_STENCIL, options.pixelDatatype must be UNSIGNED_INT_24_8_WEBGL.');
+        if ((pixelFormat === PixelFormat.DEPTH_STENCIL) && (pixelDatatype !== PixelDatatype.UNSIGNED_INT_24_8)) {
+            throw new DeveloperError('When options.pixelFormat is DEPTH_STENCIL, options.pixelDatatype must be UNSIGNED_INT_24_8.');
         }
         //>>includeEnd('debug');
 
@@ -123,24 +148,24 @@ define([
 
             if (defined(source.arrayBufferView)) {
                 // Source: typed array
-                gl.texImage2D(textureTarget, 0, pixelFormat, width, height, 0, pixelFormat, pixelDatatype, source.arrayBufferView);
+                gl.texImage2D(textureTarget, 0, internalFormat, width, height, 0, pixelFormat, pixelDatatype, source.arrayBufferView);
             } else if (defined(source.framebuffer)) {
                 // Source: framebuffer
                 if (source.framebuffer !== context.defaultFramebuffer) {
                     source.framebuffer._bind();
                 }
 
-                gl.copyTexImage2D(textureTarget, 0, pixelFormat, source.xOffset, source.yOffset, width, height, 0);
+                gl.copyTexImage2D(textureTarget, 0, internalFormat, source.xOffset, source.yOffset, width, height, 0);
 
                 if (source.framebuffer !== context.defaultFramebuffer) {
                     source.framebuffer._unBind();
                 }
             } else {
                 // Source: ImageData, HTMLImageElement, HTMLCanvasElement, or HTMLVideoElement
-                gl.texImage2D(textureTarget, 0, pixelFormat, pixelFormat, pixelDatatype, source);
+                gl.texImage2D(textureTarget, 0, internalFormat, pixelFormat, pixelDatatype, source);
             }
         } else {
-            gl.texImage2D(textureTarget, 0, pixelFormat, width, height, 0, pixelFormat, pixelDatatype, null);
+            gl.texImage2D(textureTarget, 0, internalFormat, width, height, 0, pixelFormat, pixelDatatype, null);
         }
         gl.bindTexture(textureTarget, null);
 
@@ -157,8 +182,8 @@ define([
         this._flipY = flipY;
         this._sampler = undefined;
 
-        this.sampler = new Sampler();
-    };
+        this.sampler = defined(options.sampler) ? options.sampler : new Sampler();
+    }
 
     /**
      * Creates a texture, and copies a subimage of the framebuffer to it.  When called without arguments,
@@ -182,14 +207,15 @@ define([
      * @exception {DeveloperError} framebufferXOffset + width must be less than or equal to canvas.clientWidth.
      * @exception {DeveloperError} framebufferYOffset + height must be less than or equal to canvas.clientHeight.
      *
-     * @see Sampler
      *
      * @example
      * // Create a texture with the contents of the framebuffer.
      * var t = Texture.fromFramebuffer({
      *     context : context
      * });
-     *
+     * 
+     * @see Sampler
+     * 
      * @private
      */
     Texture.fromFramebuffer = function(options) {

@@ -17,7 +17,7 @@ define([
         Scene,
         createCanvas,
         destroyCanvas) {
-    "use strict";
+    'use strict';
 
     function createScene(options) {
         options = defaultValue(options, {});
@@ -34,12 +34,10 @@ define([
         var contextOptions = options.contextOptions;
         contextOptions.webgl = defaultValue(contextOptions.webgl, {});
         contextOptions.webgl.antialias = defaultValue(contextOptions.webgl.antialias, false);
-        contextOptions.webgl.failIfMajorPerformanceCaveat = false;
 
         var scene = new Scene(options);
 
-        var parameters = queryToObject(window.location.search.substring(1));
-        if (defined(parameters.webglValidation)) {
+        if (window.webglValidation) {
             var context = scene.context;
             context.validateShaderProgram = true;
             context.validateFramebuffer = true;

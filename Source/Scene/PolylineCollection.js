@@ -65,7 +65,7 @@ define([
         Pass,
         Polyline,
         SceneMode) {
-    "use strict";
+    'use strict';
 
     var SHOW_INDEX = Polyline.SHOW_INDEX;
     var WIDTH_INDEX = Polyline.WIDTH_INDEX;
@@ -121,7 +121,6 @@ define([
      * @see PolylineCollection#remove
      * @see Polyline
      * @see LabelCollection
-     * @demo {@link http://cesiumjs.org/Cesium/Apps/Sandcastle/index.html?src=Polylines.html|Cesium Sandcastle Polyline Demo}
      *
      * @example
      * // Create a polyline collection with two polylines
@@ -144,7 +143,7 @@ define([
      *   width : 4
      * });
      */
-    var PolylineCollection = function(options) {
+    function PolylineCollection(options) {
         options = defaultValue(options, defaultValue.EMPTY_OBJECT);
 
         /**
@@ -198,7 +197,7 @@ define([
         this._positionBuffer = undefined;
         this._pickColorBuffer = undefined;
         this._texCoordExpandWidthAndShowBuffer = undefined;
-    };
+    }
 
     defineProperties(PolylineCollection.prototype, {
         /**
@@ -229,9 +228,6 @@ define([
      *
      * @exception {DeveloperError} This object was destroyed, i.e., destroy() was called.
      *
-     * @see PolylineCollection#remove
-     * @see PolylineCollection#removeAll
-     * @see PolylineCollection#update
      *
      * @example
      * // Example 1:  Add a polyline, specifying all the default values.
@@ -242,6 +238,10 @@ define([
            Cesium.Cartographic.fromDegrees(-77.02, 38.53)]),
      *   width : 1
      * });
+     * 
+     * @see PolylineCollection#remove
+     * @see PolylineCollection#removeAll
+     * @see PolylineCollection#update
      */
     PolylineCollection.prototype.add = function(polyline) {
         var p = new Polyline(polyline, this);
@@ -265,14 +265,15 @@ define([
      *
      * @exception {DeveloperError} This object was destroyed, i.e., destroy() was called.
      *
-     * @see PolylineCollection#add
-     * @see PolylineCollection#removeAll
-     * @see PolylineCollection#update
-     * @see Polyline#show
      *
      * @example
      * var p = polylines.add(...);
      * polylines.remove(p);  // Returns true
+     * 
+     * @see PolylineCollection#add
+     * @see PolylineCollection#removeAll
+     * @see PolylineCollection#update
+     * @see Polyline#show
      */
     PolylineCollection.prototype.remove = function(polyline) {
         if (this.contains(polyline)) {
@@ -299,14 +300,15 @@ define([
      *
      * @exception {DeveloperError} This object was destroyed, i.e., destroy() was called.
      *
-     * @see PolylineCollection#add
-     * @see PolylineCollection#remove
-     * @see PolylineCollection#update
      *
      * @example
      * polylines.add(...);
      * polylines.add(...);
      * polylines.removeAll();
+     * 
+     * @see PolylineCollection#add
+     * @see PolylineCollection#remove
+     * @see PolylineCollection#update
      */
     PolylineCollection.prototype.removeAll = function() {
         releaseShaders(this);
@@ -370,7 +372,7 @@ define([
     /**
      * @private
      */
-    PolylineCollection.prototype.update = function(context, frameState, commandList) {
+    PolylineCollection.prototype.update = function(frameState, commandList) {
         removePolylines(this);
 
         if (this._polylines.length === 0) {
@@ -379,6 +381,7 @@ define([
 
         updateMode(this, frameState);
 
+        var context = frameState.context;
         var projection = frameState.mapProjection;
         var polyline;
         var properties = this._propertiesChanged;
@@ -460,19 +463,22 @@ define([
 
         if (pass.render) {
             var colorList = this._colorCommands;
-            createCommandLists(this, context, frameState, colorList, commandList, modelMatrix, true);
+            createCommandLists(this, frameState, colorList, modelMatrix, true);
         }
 
         if (pass.pick) {
             var pickList = this._pickCommands;
-            createCommandLists(this, context, frameState, pickList, commandList, modelMatrix, false);
+            createCommandLists(this, frameState, pickList, modelMatrix, false);
         }
     };
 
     var boundingSphereScratch = new BoundingSphere();
     var boundingSphereScratch2 = new BoundingSphere();
 
-    function createCommandLists(polylineCollection, context, frameState, commands, commandList, modelMatrix, renderPass) {
+    function createCommandLists(polylineCollection, frameState, commands, modelMatrix, renderPass) {
+        var context = frameState.context;
+        var commandList = frameState.commandList;
+
         var commandsLength = commands.length;
         var commandIndex = 0;
         var cloneBoundingSphere = true;
@@ -634,10 +640,11 @@ define([
      *
      * @exception {DeveloperError} This object was destroyed, i.e., destroy() was called.
      *
-     * @see PolylineCollection#isDestroyed
      *
      * @example
      * polylines = polylines && polylines.destroy();
+     * 
+     * @see PolylineCollection#isDestroyed
      */
     PolylineCollection.prototype.destroy = function() {
         destroyVertexArrays(this);
@@ -1042,7 +1049,7 @@ define([
         this.bucket = bucket;
     }
 
-    var PolylineBucket = function(material, mode, modelMatrix) {
+    function PolylineBucket(material, mode, modelMatrix) {
         this.polylines = [];
         this.lengthOfPositions = 0;
         this.material = material;
@@ -1050,8 +1057,7 @@ define([
         this.pickShaderProgram = undefined;
         this.mode = mode;
         this.modelMatrix = modelMatrix;
-    };
-
+    }
     PolylineBucket.prototype.addPolyline = function(p) {
         var polylines = this.polylines;
         polylines.push(p);
@@ -1323,7 +1329,7 @@ define([
                 for ( var j = 0; j < numberOfSegments; ++j) {
                     var segmentLength = segments[j] - 1.0;
                     for ( var k = 0; k < segmentLength; ++k) {
-                        if (indicesCount + 4 >= CesiumMath.SIXTY_FOUR_KILOBYTES - 1) {
+                        if (indicesCount + 4 >= CesiumMath.SIXTY_FOUR_KILOBYTES - 2) {
                             polyline._locatorBuckets.push({
                                 locator : bucketLocator,
                                 count : segmentIndexCount
@@ -1355,7 +1361,7 @@ define([
                     count : segmentIndexCount
                 });
 
-                if (indicesCount + 4 >= CesiumMath.SIXTY_FOUR_KILOBYTES - 1) {
+                if (indicesCount + 4 >= CesiumMath.SIXTY_FOUR_KILOBYTES - 2) {
                     vertexBufferOffset.push(0);
                     indices = [];
                     totalIndices.push(indices);

@@ -5,13 +5,12 @@ define([
     ], function(
         WebGLConstants,
         freezeObject) {
-    "use strict";
+    'use strict';
 
     /**
      * The format of a pixel, i.e., the number of components it has and what they represent.
      *
-     * @namespace
-     * @alias PixelFormat
+     * @exports PixelFormat
      */
     var PixelFormat = {
         /**
@@ -23,7 +22,7 @@ define([
         DEPTH_COMPONENT : WebGLConstants.DEPTH_COMPONENT,
 
         /**
-         * A pixel format containing a depth and stencil value, most often used with {@link PixelDatatype.UNSIGNED_INT_24_8_WEBGL}.
+         * A pixel format containing a depth and stencil value, most often used with {@link PixelDatatype.UNSIGNED_INT_24_8}.
          *
          * @type {Number}
          * @constant

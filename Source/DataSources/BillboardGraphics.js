@@ -13,7 +13,7 @@ define([
         DeveloperError,
         Event,
         createPropertyDescriptor) {
-    "use strict";
+    'use strict';
 
     /**
      * Describes a two dimensional icon located at the position of the containing {@link Entity}.
@@ -48,7 +48,7 @@ define([
      *
      * @demo {@link http://cesiumjs.org/Cesium/Apps/Sandcastle/index.html?src=Billboards.html|Cesium Sandcastle Billboard Demo}
      */
-    var BillboardGraphics = function(options) {
+    function BillboardGraphics(options) {
         this._image = undefined;
         this._imageSubscription = undefined;
         this._imageSubRegion = undefined;
@@ -86,7 +86,7 @@ define([
         this._definitionChanged = new Event();
 
         this.merge(defaultValue(options, defaultValue.EMPTY_OBJECT));
-    };
+    }
 
     defineProperties(BillboardGraphics.prototype, {
         /**

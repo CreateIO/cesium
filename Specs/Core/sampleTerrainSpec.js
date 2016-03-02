@@ -9,8 +9,7 @@ defineSuite([
         Cartographic,
         CesiumTerrainProvider,
         when) {
-    "use strict";
-    /*global jasmine,describe,xdescribe,it,xit,expect,beforeEach,afterEach,beforeAll,afterAll,spyOn*/
+    'use strict';
 
     var terrainProvider = new CesiumTerrainProvider({
         url : '//assets.agi.com/stk-terrain/world'
@@ -33,7 +32,7 @@ defineSuite([
 
     it('queries heights from Small Terrain', function() {
         var terrainProvider = new CesiumTerrainProvider({
-            url : '//s3.amazonaws.com/cesiumjs/smallTerrain'
+            url : '//cesiumjs.org/smallTerrain'
         });
 
         var positions = [

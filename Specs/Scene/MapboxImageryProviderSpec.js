@@ -23,8 +23,7 @@ defineSuite([
         ImageryProvider,
         ImageryState,
         pollToPromise) {
-    "use strict";
-    /*global jasmine,describe,xdescribe,it,xit,expect,beforeEach,afterEach,beforeAll,afterAll,spyOn*/
+    'use strict';
 
     afterEach(function() {
         loadImage.createImage = loadImage.defaultCreateImage;
@@ -38,6 +37,18 @@ defineSuite([
         expect(function() {
             return new MapboxImageryProvider({});
         }).toThrowDeveloperError();
+    });
+
+    it('resolves readyPromise', function() {
+        var provider = new MapboxImageryProvider({
+            url : 'made/up/mapbox/server/',
+            mapId: 'test-id'
+        });
+
+        return provider.readyPromise.then(function (result) {
+            expect(result).toBe(true);
+            expect(provider.ready).toBe(true);
+        });
     });
 
     it('returns valid value for hasAlphaChannel', function() {
