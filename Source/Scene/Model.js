@@ -1176,7 +1176,7 @@ define([
 //            model._loadError = new RuntimeError('Failed to load external ' + type + ': ' + path);
 //            model._state = ModelState.FAILED;
             model._state = -1;
-            model._readyPromise.reject(new RuntimeError('Failed to load ' + type + ': ' + :path));
+            model._readyPromise.reject(new RuntimeError('Failed to load ' + type + ': ' + path));
         };
     }
 
